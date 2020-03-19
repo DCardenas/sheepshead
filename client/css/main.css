@@ -1,0 +1,18 @@
+* {
+  margin: 0;
+  background-color: black;
+}
+
+#content {
+  width: 1160px;
+  height: 600px;
+  margin: 200px auto;
+}
+
+#game-container {
+  display: inline-block;
+}
+
+#spectator-container {
+  display: inline-block;
+}
