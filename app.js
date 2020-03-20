@@ -30,6 +30,7 @@ io.sockets.on('connection', socket => {
   });
 
   clientManager.onClientJoin(client);
+  client.emit('init', {selfID: client.id});
 
   socket.on('disconnect', data => {
     console.log('User Disconnected');

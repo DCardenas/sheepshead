@@ -1,62 +1,33 @@
-class Client {
-  constructor(data) {
-    for (let key in data) {
-      this[key] = data[key];
-      this.seat = null;
-    }
-  }
-}
+import Seat from './Seat.js';
+import setupSocket from './setup/socket.js';
+import setupCanvas from './setup/canvas.js';
+import setupComp from './setup/comp.js';
 
 const clients = new Map();
+const seats = [];
 
-const socket = io();
-
-socket.on('init', data => {
-  if (data.clients) {
-    data.clients.forEach(clientData => {
-      const client = new Client(clientData);
-      clients.set(client.id, client);
-    });
-  }
-});
-socket.on('remove', data => {
-  if (data.clients) {
-    data.clients.forEach(id => {
-      clients.delete(id);
-    });
-  }
-});
-
-const canvas = {
-  game: document.getElementById('gameCanvas'),
-  spec: document.getElementById('spectatorCanvas')
+const NUM_PLAYERS = 5;
+for (let i = 0; i < NUM_PLAYERS; i++) {
+  seats.push(new Seat(i));
 }
-canvas.game.width = 900;
-canvas.game.height = 600;
-canvas.spec.width = 240;
-canvas.spec.height = 600;
 
-const ctx = {
-  game: canvas.game.getContext('2d'),
-  spec: canvas.spec.getContext('2d')
-}
+let selfID = null;
+const socket = setupSocket(clients, selfID);
+
+const {canvas, ctx} = setupCanvas();
+const comp = setupComp(
+  clients, seats, selfID,
+  {bgColor: '#161642', redraw: true},
+  {bgColor: 'grey', redraw: true}
+);
 
 function loop() {
-  ctx.game.fillStyle = '#161648';
-  ctx.game.fillRect(0, 0, canvas.game.width, canvas.game.height);
+  comp.game.draw(ctx.game);
+  comp.spec.draw(ctx.spec);
 
-  ctx.spec.fillStyle = 'grey';
-  ctx.spec.fillRect(0, 0, canvas.spec.width, canvas.spec.height);
-
-  ctx.spec.fillStyle = 'black';
-  ctx.spec.textAlign = 'left';
-  ctx.spec.textBaseline = 'middle';
-  ctx.spec.font = '20px Arial';
-  let i = 0;
-  clients.forEach(client => {
-    ctx.spec.fillText(client.name, 10, i * 40 + 20);
-    i++;
-  })
+  if (selfID) {
+    console.log(selfID);
+  }
 
   window.requestAnimationFrame(loop);
 }

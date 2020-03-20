@@ -5,12 +5,15 @@ class Client {
     for (let key in data) {
       this[key] = data[key];
     }
+
+    this.seat = null;
   }
 
   getInitPack() {
     const pack = {};
     pack.id = this.id;
     pack.name = this.name;
+    pack.seat = this.seat;
     return pack;
   }
 
