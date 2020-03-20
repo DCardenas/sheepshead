@@ -16,37 +16,9 @@ if (DEBUG) {
   console.log('WARNING: DEBUG is active. Do not deploy!');
 }
 
-class Client {
-  constructor(socket, data) {
-    this.socket = socket;
-
-    for (let key in data) {
-      this[key] = data[key];
-    }
-  }
-
-  getInitPack() {
-    const pack = {};
-    pack.id = this.id;
-    pack.name = this.name;
-    return pack;
-  }
-
-  emit(type, data) {
-    this.socket.emit(type, data);
-  }
-
-  on(type, callback) {
-    this.socket.on(type, callback);
-  }
-}
-
-const clients = new Map();
-function emitAll(type, data) {
-  clients.forEach(client => {
-    client.emit(type, data);
-  });
-}
+const Client = require('./server/Client.js');
+const ClientManager = require('./server/ClientManager.js');
+const clientManager = new ClientManager();
 
 const io = require('socket.io')(serv, {});
 io.sockets.on('connection', socket => {
@@ -54,10 +26,13 @@ io.sockets.on('connection', socket => {
 
   const client = new Client(socket, {
     id: Math.random(),
-    name: 'Daniel',
+    name: 'Dan' + Math.floor(Math.random() * 100),
   });
 
-  clients.set(client.id, client);
+  clientManager.onClientJoin(client);
 
-  emitAll('init', {clients: [client.getInitPack()]});
+  socket.on('disconnect', data => {
+    console.log('User Disconnected');
+    clientManager.onClientLeave(client.id);
+  });
 });

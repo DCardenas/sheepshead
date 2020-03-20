@@ -19,6 +19,13 @@ socket.on('init', data => {
     });
   }
 });
+socket.on('remove', data => {
+  if (data.clients) {
+    data.clients.forEach(id => {
+      clients.delete(id);
+    });
+  }
+});
 
 const canvas = {
   game: document.getElementById('gameCanvas'),
@@ -28,6 +35,7 @@ canvas.game.width = 900;
 canvas.game.height = 600;
 canvas.spec.width = 240;
 canvas.spec.height = 600;
+
 const ctx = {
   game: canvas.game.getContext('2d'),
   spec: canvas.spec.getContext('2d')
