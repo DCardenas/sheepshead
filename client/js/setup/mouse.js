@@ -10,13 +10,26 @@ export default function setupMouse(canvas, seats) {
     mouse.x = event.clientX - canvas.offsetLeft;
     mouse.y = event.clientY - canvas.offsetTop;
 
+    if (mouse.hover) {
+      if (collisionPointRect(mouse, mouse.hover.bounds)) {
+        return
+      } else {
+        mouse.exit();
+      }
+    }
+
     seats.forEach(seat => {
       if (collisionPointRect(mouse, seat.bounds)) {
-        mouse.hover = seat;
-        seat.redraw = true;
+        mouse.enter(seat, 'pointer');
       }
     });
   });
+
+  mouse.addCallback('click', event => {
+    if (mouse.hover && mouse.hover.onclick) {
+      mouse.hover.onclick(event.which);
+    }
+  })
 
   return mouse;
 }

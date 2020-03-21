@@ -39,10 +39,26 @@ export default class Seat {
     ctx.fillStyle = 'white';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.font = '30px Arial';
+    ctx.font = '24px Arial';
 
-    ctx.fillText('Sit', this.w / 2, this.h * 0.6);
+    let text = 'Seat ' + this.num;
+    if (this.player) {
+      text = this.player.name;
+    }
+
+    ctx.fillText(text, this.w / 2, this.h * 0.55);
 
     this.redraw = false;
+  }
+
+  addPlayer(player) {
+    this.player = player;
+    player.seat = this.num;
+    this.redrawBuffer();
+  }
+
+  removePlayer() {
+    this.player = null;
+    this.redrawBuffer();
   }
 }

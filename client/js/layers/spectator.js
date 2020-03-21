@@ -25,7 +25,7 @@ export function createSpectatorLayer(clients) {
     ctx.font = '20px Arial';
     let i = 0;
     clients.forEach(client => {
-      if (client.playing) {
+      if (client.seat !== null) {
         return
       }
 

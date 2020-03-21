@@ -18,7 +18,7 @@ export function createGameBGLayer(settings) {
   }
 }
 
-export function createSeatLayer(clients, seats, selfID) {
+export function createSeatLayer(clients, seats, settings) {
   const seatPos = [
     {x: 0.5, y: 0.90},
     {x: 0.10, y: 0.50},
@@ -30,7 +30,7 @@ export function createSeatLayer(clients, seats, selfID) {
   return function drawSeatLayer(ctx) {
     let seatNum = 0;
 
-    const self = clients.get(selfID);
+    const self = clients.get(settings.selfID);
     if (self && self.seat) {
       seatNum = self.seat;
     }
@@ -38,7 +38,7 @@ export function createSeatLayer(clients, seats, selfID) {
     const NUM_PLAYERS = 5;
     for (let i = 0; i < NUM_PLAYERS; i++) {
       const seat = seats[seatNum];
-      const pos = seatPos[seatNum];
+      const pos = seatPos[i];
 
       if (seat.redraw) {
         seat.redrawBuffer();
@@ -49,11 +49,7 @@ export function createSeatLayer(clients, seats, selfID) {
       seat.x = x;
       seat.y = y;
 
-      if (seat.player) {
-
-      } else {
-        ctx.drawImage(seat.buffer, x, y);
-      }
+      ctx.drawImage(seat.buffer, x, y);
 
       seatNum += 1;
       seatNum %= NUM_PLAYERS;

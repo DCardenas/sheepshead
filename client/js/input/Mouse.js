@@ -6,6 +6,10 @@ export default class MouseManager {
     this.callbacks = new Map();
   }
 
+  setCursor(type) {
+    document.body.style.cursor = type;
+  }
+
   listenTo(element, type) {
     if (!this.callbacks.has(type)) {
       this.callbacks.set(type, []);
@@ -29,5 +33,25 @@ export default class MouseManager {
     this.callbacks.get(type).forEach(callback => {
       callback(event);
     });
+  }
+
+  enter(obj, cursor) {
+    this.hover = obj;
+    obj.hover = true;
+    obj.redraw = true;
+
+    this.setCursor(cursor || 'default');
+  }
+
+  exit() {
+    if (!this.hover) {
+      return
+    }
+
+    this.hover.hover = false;
+    this.hover.redraw = true;
+    this.hover = null;
+
+    this.setCursor('default');
   }
 }

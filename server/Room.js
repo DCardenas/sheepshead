@@ -16,6 +16,18 @@ class Room {
     this.clients.delete(client.id);
     client.room = null;
   }
+
+  canSit(seatNum) {
+    return this.game.canSit(seatNum);
+  }
+
+  sit(seatNum, client) {
+    this.game.sit(seatNum, client);
+  }
+
+  stand(client) {
+    this.game.stand(client);
+  }
 }
 
 module.exports = Room;
