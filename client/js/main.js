@@ -2,7 +2,9 @@ import Seat from './Seat.js';
 import setupSocket from './setup/socket.js';
 import setupCanvas from './setup/canvas.js';
 import setupComp from './setup/comp.js';
+import setupMouse from './setup/mouse.js';
 
+const {canvas, ctx} = setupCanvas();
 const clients = new Map();
 const seats = [];
 
@@ -11,23 +13,36 @@ for (let i = 0; i < NUM_PLAYERS; i++) {
   seats.push(new Seat(i));
 }
 
+const mouse = setupMouse(canvas, seats);
+
 let selfID = null;
 const socket = setupSocket(clients, selfID);
+socket.on('init', data => {
+  if (data.selfID) {
+    selfID = data.selfID;
+  }
+});
 
-const {canvas, ctx} = setupCanvas();
 const comp = setupComp(
   clients, seats, selfID,
-  {bgColor: '#161642', redraw: true},
-  {bgColor: 'grey', redraw: true}
+  {
+    game: {
+    bgColor: '#161642', redraw: true
+    },
+    spec: {
+    bgColor: 'grey', redraw: true
+    }
+  }
 );
 
 function loop() {
-  comp.game.draw(ctx.game);
-  comp.spec.draw(ctx.spec);
+  comp.draw(ctx);
+  
+  ctx.fillStyle = 'white';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'top';
+  ctx.fillText(`(${mouse.x}, ${mouse.y})`, 10, 10);
 
-  if (selfID) {
-    console.log(selfID);
-  }
 
   window.requestAnimationFrame(loop);
 }

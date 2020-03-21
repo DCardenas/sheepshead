@@ -11,9 +11,6 @@ export default function setupSocket(clients) {
         clients.set(client.id, client);
       });
     }
-    if (data.selfID) {
-      selfID = data.selfID;
-    }
   });
   socket.on('remove', data => {
     if (data.clients) {

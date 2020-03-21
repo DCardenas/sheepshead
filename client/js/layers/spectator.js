@@ -1,8 +1,8 @@
-import Compositor from '../Compositor.js';
+const SPEC_OFFSET = 910;
 
-function createSpectatorBGLayer(settings) {
+export function createSpectatorBGLayer(settings) {
   const buffer = document.createElement('canvas');
-  buffer.width = 240;
+  buffer.width = 250;
   buffer.height = 600;
 
   return function drawSpectatorBGLayer(ctx) {
@@ -13,11 +13,11 @@ function createSpectatorBGLayer(settings) {
         settings.redraw = false;
     }
 
-    ctx.drawImage(buffer, 0, 0);
+    ctx.drawImage(buffer, SPEC_OFFSET, 0);
   }
 }
 
-function createSpectatorLayer(clients) {
+export function createSpectatorLayer(clients) {
   return function drawSpecLayer(ctx) {
     ctx.fillStyle = 'black';
     ctx.textAlign = 'left';
@@ -29,20 +29,8 @@ function createSpectatorLayer(clients) {
         return
       }
 
-      ctx.fillText(client.name, 10, i * 40 + 20);
+      ctx.fillText(client.name, SPEC_OFFSET + 10, i * 40 + 20);
       i++;
     });
   }
-}
-
-export default function createSpectatorCompositor(clients, settings) {
-  const comp = new Compositor();
-
-  const specBGLayer = createSpectatorBGLayer(settings);
-  const specLayer = createSpectatorLayer(clients);
-  [specBGLayer, specLayer].forEach(layer => {
-    comp.addLayer(layer);
-  });
-
-  return comp;
 }

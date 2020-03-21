@@ -16,10 +16,12 @@ if (DEBUG) {
   console.log('WARNING: DEBUG is active. Do not deploy!');
 }
 
+const Room = require('./server/Room.js');
 const Client = require('./server/Client.js');
 const ClientManager = require('./server/ClientManager.js');
 const clientManager = new ClientManager();
 
+const room = new Room({});
 const io = require('socket.io')(serv, {});
 io.sockets.on('connection', socket => {
   console.log('User Connected');
@@ -32,8 +34,11 @@ io.sockets.on('connection', socket => {
   clientManager.onClientJoin(client);
   client.emit('init', {selfID: client.id});
 
+  room.joinRoom(client);
+
   socket.on('disconnect', data => {
     console.log('User Disconnected');
+    room.leaveRoom(client);
     clientManager.onClientLeave(client.id);
   });
 });

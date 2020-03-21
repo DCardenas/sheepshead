@@ -1,9 +1,10 @@
-import Compositor from '../Compositor.js';
+const CANVAS_WIDTH = 900;
+const CANVAS_HEIGHT = 600;
 
-function createBGLayer(settings) {
+export function createGameBGLayer(settings) {
   const buffer = document.createElement('canvas');
-  buffer.width = 900;
-  buffer.height = 600;
+  buffer.width = CANVAS_WIDTH;
+  buffer.height = CANVAS_HEIGHT;
 
   return function drawBGLayer(ctx) {
     if (settings.redraw) {
@@ -17,15 +18,15 @@ function createBGLayer(settings) {
   }
 }
 
+export function createSeatLayer(clients, seats, selfID) {
+  const seatPos = [
+    {x: 0.5, y: 0.90},
+    {x: 0.10, y: 0.50},
+    {x: 0.33, y: 0.10},
+    {x: 0.66, y: 0.10},
+    {x: 0.90, y: 0.50},
+  ]
 
-const seatPos = [
-  {x: 0.5, y: 0.90},
-  {x: 0.10, y: 0.60},
-  {x: 0.33, y: 0.10},
-  {x: 0.66, y: 0.10},
-  {x: 0.90, y: 0.60},
-]
-function createSeatLayer(clients, seats, selfID) {
   return function drawSeatLayer(ctx) {
     let seatNum = 0;
 
@@ -38,13 +39,19 @@ function createSeatLayer(clients, seats, selfID) {
     for (let i = 0; i < NUM_PLAYERS; i++) {
       const seat = seats[seatNum];
       const pos = seatPos[seatNum];
+
+      if (seat.redraw) {
+        seat.redrawBuffer();
+      }
+
+      const x = pos.x * CANVAS_WIDTH - seat.w / 2;
+      const y = pos.y * CANVAS_HEIGHT - seat.h / 2;
+      seat.x = x;
+      seat.y = y;
+
       if (seat.player) {
 
       } else {
-        const CANVAS_WIDTH = 900;
-        const CANVAS_HEIGHT = 600;
-        const x = pos.x * CANVAS_WIDTH - seat.w / 2;
-        const y = pos.y * CANVAS_HEIGHT - seat.h / 2;
         ctx.drawImage(seat.buffer, x, y);
       }
 
@@ -52,17 +59,4 @@ function createSeatLayer(clients, seats, selfID) {
       seatNum %= NUM_PLAYERS;
     }
   }
-}
-
-export default function createGameCompositor(clients, seats, selfID, settings) {
-  const comp = new Compositor();
-
-  const bgLayer = createBGLayer(settings);
-  const seatLayer = createSeatLayer(clients, seats, selfID);
-
-  [bgLayer, seatLayer].forEach(layer => {
-    comp.addLayer(layer)
-  });
-
-  return comp;
 }
