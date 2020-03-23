@@ -1,7 +1,10 @@
+const Deck = require('./Deck.js');
+
 class Client {
   constructor(socket, data) {
     this.socket = socket;
     this.seat = null;
+    this.hand = new Deck();
 
     for (let key in data) {
       this[key] = data[key];
@@ -18,7 +21,7 @@ class Client {
 
   getUpdatePack(keys) {
     const pack = {};
-    
+
     pack.id = this.id;
     if (keys.length === 0) {
       console.log('Trying to get an update pack without requesting keys');

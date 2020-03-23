@@ -11,23 +11,20 @@ export default class Seat {
 
     this.redraw = true;
     this.hover = false;
-    this.createBuffer();
+
+    this.button = document.createElement('canvas');
+    this.button.width = this.w;
+    this.button.height = this.h;
+
+    this.redrawBuffer();
   }
 
   get bounds() {
     return this.hitbox.bounds;
   }
 
-  createBuffer() {
-    this.buffer = document.createElement('canvas');
-    this.buffer.width = this.w;
-    this.buffer.height = this.h;
-
-    this.redrawBuffer();
-  }
-
   redrawBuffer() {
-    const ctx = this.buffer.getContext('2d');
+    const ctx = this.button.getContext('2d');
 
     ctx.fillStyle = '#e37724';
 
@@ -36,7 +33,7 @@ export default class Seat {
     }
 
     ctx.fillRect(
-      this.buffer.width / 2 - this.w / 2, this.buffer.height / 2 - this.h / 2,
+      this.button.width / 2 - this.w / 2, this.button.height / 2 - this.h / 2,
       this.w, this.h
     );
 
@@ -50,7 +47,7 @@ export default class Seat {
       text = this.player.name;
     }
 
-    ctx.fillText(text, this.buffer.width / 2, this.buffer.height * 0.55);
+    ctx.fillText(text, this.button.width / 2, this.button.height * 0.55);
 
     this.redraw = false;
   }

@@ -1,4 +1,5 @@
 const Client = require('./Client.js');
+const Deck = require('./Deck.js');
 const setupStateManager = require('./states.js');
 
 class Game {
@@ -25,6 +26,11 @@ class Game {
       4: null
     }
 
+    this.deck = new Deck();
+    this.deck.populate();
+
+    this.blind = new Deck();
+
     this.stateManager = setupStateManager(this);
   }
 
@@ -33,6 +39,8 @@ class Game {
     this.dealer = null;
     this.picker = null;
     this.partner = null;
+    this.deck.populate();
+    this.blind.clear();
   }
 
   forEachSeat(callback) {
@@ -109,13 +117,37 @@ class Game {
 
   handleEvent(type, data) {
     this.stateManager.handleEvent(type, data, this, res => {
-      if (res.error) {
-        this.room.emitOne(data.player.id, 'error-msg', res);
-        console.log(res.msg);
-      } else {
-        this.room.emitAll('update', res);
+      // Sometimes events are sent that don't require an update
+      if (res) {
+        if (res.error) {
+          this.room.emitOne(data.player.id, 'error-msg', res);
+          console.log(res.msg);
+        } else {
+          this.room.emitAll('update', res);
+        }
       }
     });
+  }
+
+  deal() {
+    this.forEachSeat((player, i) => {
+      this.deck.deal(player.hand, 3);
+    });
+
+    this.deck.deal(this.blind, 2);
+
+    this.forEachSeat((player, i) => {
+      this.deck.deal(player.hand, 3);
+    });
+  }
+
+  pick(player) {
+    if (player.seat !== this.activePlayer) {
+      console.log('Player trying to pick when it is not their turn!');
+      return
+    }
+
+    this.picker = this.activePlayer;
   }
 }
 

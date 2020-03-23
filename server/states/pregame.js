@@ -1,6 +1,6 @@
-const State = require('../State.js');
+const State = require('./State.js');
 
-function createPregame() {
+function createPregameState() {
   const pregame = new State('pregame');
 
   pregame.enter = gameState => {
@@ -24,6 +24,16 @@ function createPregame() {
     pack.partner = gameState.partner;
     pack.activePlayer = gameState.activePlayer;
     pack.state = pregame.name;
+
+    return pack;
+  }
+  pregame.exit = gameState => {
+    gameState.deal();
+
+    const pack = { clients: [] }
+    gameState.forEachSeat(player => {
+      pack.clients.push(player.getUpdatePack(['hand']));
+    });
 
     return pack;
   }
@@ -72,4 +82,4 @@ function createPregame() {
   return pregame;
 }
 
-module.exports = createPregame;
+module.exports = createPregameState;

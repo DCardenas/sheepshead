@@ -53,7 +53,7 @@ export function createSeatLayer(clients, seats, settings) {
       seat.x = x;
       seat.y = y;
 
-      ctx.drawImage(seat.buffer, x, y);
+      ctx.drawImage(seat.button, x, y);
 
       seatNum += 1;
       seatNum %= NUM_PLAYERS;

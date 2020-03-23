@@ -10,7 +10,8 @@ class StateManager {
 
   setState(name, gameState, callback) {
     if (this.activeState) {
-      this.activeState.exit(gameState);
+      const updatePack = this.activeState.exit(gameState);
+      callback(updatePack);
     }
 
     this.activeState = this.getState(name);
@@ -40,8 +41,11 @@ class StateManager {
         this.setState('pregame', gameState, callback);
       }
 
+      updatePack.stand = {
+        seat: data.player.seat
+      }
       callback(updatePack);
-      return;
+      return
     }
 
     if (this.activeState.toExit) {
