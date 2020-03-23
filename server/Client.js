@@ -1,12 +1,11 @@
 class Client {
   constructor(socket, data) {
     this.socket = socket;
+    this.seat = null;
 
     for (let key in data) {
       this[key] = data[key];
     }
-
-    this.seat = null;
   }
 
   getInitPack() {

@@ -15,6 +15,14 @@ class Room {
   leaveRoom(client) {
     this.clients.delete(client.id);
     client.room = null;
+
+    if (client.seat) {
+      this.game.stand(client);
+    }
+  }
+
+  addAI() {
+    return this.game.addAI();
   }
 
   canSit(seatNum) {

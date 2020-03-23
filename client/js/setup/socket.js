@@ -4,15 +4,25 @@ export default function setupSocket(clients, seats) {
   const socket = io();
   let selfID = null;
 
+  function createClient(clientData) {
+    const client = new Client(clientData);
+    clients.set(client.id, client);
+
+    if (client.seat !== null) {
+      seats[client.seat].addPlayer(client);
+    }
+  }
+
   socket.on('init', data => {
     if (data.clients) {
       data.clients.forEach(clientData => {
-        const client = new Client(clientData);
-        clients.set(client.id, client);
+        createClient(clientData);
+      });
+    }
 
-        if (client.seat !== null) {
-          seats[client.seat].addPlayer(client);
-        }
+    if (data.game) {
+      data.game.ai.forEach(aiData => {
+        createClient(aiData);
       });
     }
   });

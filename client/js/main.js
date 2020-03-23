@@ -3,6 +3,7 @@ import setupSocket from './setup/socket.js';
 import setupCanvas from './setup/canvas.js';
 import setupComp from './setup/comp.js';
 import setupMouse from './setup/mouse.js';
+import setupKeyboard from './setup/keyboard.js';
 import { createObjectForEach } from './utils.js';
 
 const { canvas, ctx } = setupCanvas();
@@ -45,6 +46,7 @@ socket.on('init', data => {
   }
 });
 
+const keyboard = setupKeyboard(socket);
 const mouse = setupMouse(canvas, seats);
 const comp = setupComp(clients, seats, settings);
 

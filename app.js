@@ -32,7 +32,7 @@ io.sockets.on('connection', socket => {
   });
 
   clientManager.onClientJoin(client);
-  client.emit('init', {selfID: client.id});
+  client.emit('init', {selfID: client.id, game: room.game.getInitPack()});
 
   room.joinRoom(client);
 
@@ -48,6 +48,15 @@ io.sockets.on('connection', socket => {
       clientManager.emitAll('playerSit', {id: client.id, seat: seatNum});
     } else {
       socket.emit('warning', {msg: 'Seat already taken!'});
+    }
+  });
+
+  // Need to add check that they own the room
+  socket.on('addAI', () => {
+    const ai = room.addAI();
+
+    if (ai) {
+      clientManager.emitAll('init', {clients: [ai.getInitPack()]});
     }
   });
 
