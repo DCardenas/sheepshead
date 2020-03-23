@@ -11,6 +11,11 @@ const clients = new Map();
 
 createObjectForEach();
 
+const gameState = {
+  state: 'pregame',
+  dealer: null,
+  activePlayer: null
+}
 const seats = {
   0: null,
   1: null,
@@ -39,7 +44,7 @@ const settings = {
   bgColor: 'grey', redraw: true
   }
 }
-const socket = setupSocket(clients, seats);
+const socket = setupSocket(clients, seats, gameState);
 socket.on('init', data => {
   if (data.selfID) {
     settings.selfID = data.selfID;
@@ -48,7 +53,7 @@ socket.on('init', data => {
 
 const keyboard = setupKeyboard(socket);
 const mouse = setupMouse(canvas, seats);
-const comp = setupComp(clients, seats, settings);
+const comp = setupComp(clients, seats, settings, gameState);
 
 function loop() {
   comp.draw(ctx);

@@ -11,6 +11,11 @@ class Game {
     this.cracking = settings.cracking || false;
     this.blitzing = settings.blitzing || false;
 
+    this.activePlayer = null;
+    this.dealer = null;
+    this.picker = null;
+    this.partner = null;
+
     this.curPlayers = 0;
     this.seats = {
       0: null,
@@ -21,6 +26,13 @@ class Game {
     }
 
     this.stateManager = setupStateManager(this);
+  }
+
+  reset() {
+    this.activePlayer = null;
+    this.dealer = null;
+    this.picker = null;
+    this.partner = null;
   }
 
   forEachSeat(callback) {
@@ -41,6 +53,9 @@ class Game {
       }
     });
 
+    pack.activePlayer = this.activePlayer;
+    pack.dealer = this.dealer;
+
     return pack;
   }
 
@@ -54,12 +69,11 @@ class Game {
       if (player === null) {
         ai = new Client(null, {
           id: Math.random(),
-          name: 'Kyle' + Math.floor(Math.random() * 100),
-          seat: i
+          name: 'Kyle' + Math.floor(Math.random() * 100)
         });
 
         this.room.emitAll('init', { clients: [ ai.getInitPack() ] });
-        this.handleEvent('sit', { seat: ai.seat, player: ai });
+        this.handleEvent('sit', { seat: i, player: ai });
       }
     });
 
@@ -81,13 +95,25 @@ class Game {
     this.curPlayers -= 1;
   }
 
+  nextPlayer() {
+    if (!this.activePlayer) {
+      this.activePlayer = this.dealer + 1;
+      this.seats[this.activePlayer].active = true;
+    } else {
+      this.seats[this.activePlayer].active = false;
+      this.activePlayer += 1;
+      this.activePlayer %= this.curPlayers;
+      this.seats[this.activePlayer].active = true;
+    }
+  }
+
   handleEvent(type, data) {
     this.stateManager.handleEvent(type, data, this, res => {
-      if (res.success) {
-        this.room.emitAll('update', res);
-      } else {
+      if (res.error) {
         this.room.emitOne(data.player.id, 'error-msg', res);
         console.log(res.msg);
+      } else {
+        this.room.emitAll('update', res);
       }
     });
   }

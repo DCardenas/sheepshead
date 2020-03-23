@@ -27,15 +27,16 @@ class Room {
 
   joinRoom(client) {
     this.clientManager.add(client);
-    client.room = this.id;
+    client.room = this;
   }
 
   leaveRoom(client) {
     this.clientManager.remove(client.id);
     client.room = null;
 
-    if (client.seat) {
-      this.game.stand(client);
+    if (client.seat !== null) {
+      console.log('Standing up!');
+      this.game.handleEvent('stand', { player: client, seat: client.seat });
     }
   }
 
@@ -57,6 +58,15 @@ class Room {
 
   stand(client) {
     this.game.stand(client);
+  }
+
+  getInitPack() {
+    const pack = {
+      clients: this.clientManager.getInitPackAll(),
+      game: this.game.getInitPack()
+    }
+
+    return pack;
   }
 }
 

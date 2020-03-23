@@ -1,6 +1,6 @@
 import Client from '../Client.js';
 
-export default function setupSocket(clients, seats) {
+export default function setupSocket(clients, seats, gameState) {
   const socket = io();
   let selfID = null;
 
@@ -42,6 +42,12 @@ export default function setupSocket(clients, seats) {
         const client = clients.get(clientData.id);
         client.serverUpdate(clientData);
       });
+    }
+
+    if (data.game) {
+      for (let key in data.game) {
+        gameState[key] = data.game[key];
+      }
     }
   })
 

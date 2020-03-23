@@ -18,7 +18,7 @@ class State {
 
   handleEvent(type, data, gameState) {
     if (!this.callbacks.has(type)) {
-      return
+      return { error: true, msg: 'Tried to fire event ' + type + ' which has no callbacks.' }
     }
 
     return this.callbacks.get(type)(data, gameState);

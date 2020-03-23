@@ -16,7 +16,7 @@ class ClientManager {
   onClientJoin(client) {
     this.emitAll('init', {clients: [client.getInitPack()]});
     this.add(client);
-    client.emit('init', {clients: this.getInitPackAll()});
+    client.emit('init', client.room.getInitPack());
   }
 
   onClientLeave(id) {
@@ -43,6 +43,7 @@ class ClientManager {
       this.clients.get(id).emit(type, data);
     } else {
       console.log('Could not find client with id ' + id);
+      console.log('Trying to emit event ' + type);
     }
   }
 

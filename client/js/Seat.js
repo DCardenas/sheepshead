@@ -28,13 +28,17 @@ export default class Seat {
 
   redrawBuffer() {
     const ctx = this.buffer.getContext('2d');
-    ctx.fillStyle = 'red';
+
+    ctx.fillStyle = '#e37724';
 
     if (this.hover) {
-      ctx.fillStyle = 'green';
+      ctx.fillStyle = '#d15706';
     }
 
-    ctx.fillRect(0, 0, this.w, this.h);
+    ctx.fillRect(
+      this.buffer.width / 2 - this.w / 2, this.buffer.height / 2 - this.h / 2,
+      this.w, this.h
+    );
 
     ctx.fillStyle = 'white';
     ctx.textAlign = 'center';
@@ -46,7 +50,7 @@ export default class Seat {
       text = this.player.name;
     }
 
-    ctx.fillText(text, this.w / 2, this.h * 0.55);
+    ctx.fillText(text, this.buffer.width / 2, this.buffer.height * 0.55);
 
     this.redraw = false;
   }

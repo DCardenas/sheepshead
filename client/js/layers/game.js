@@ -1,5 +1,9 @@
 const CANVAS_WIDTH = 900;
 const CANVAS_HEIGHT = 600;
+const turnArrow = new Image();
+turnArrow.src = '/client/img/turn_arrow.png';
+turnArrow.w = 50;
+turnArrow.h = 25;
 
 export function createGameBGLayer(settings) {
   const buffer = document.createElement('canvas');
@@ -53,6 +57,29 @@ export function createSeatLayer(clients, seats, settings) {
 
       seatNum += 1;
       seatNum %= NUM_PLAYERS;
+    }
+  }
+}
+
+export function createGameStateLayer(clients, seats, gameState) {
+  return function drawGameStateLayer(ctx) {
+    if (gameState.dealer !== null) {
+      const seat = seats[gameState.dealer];
+
+      ctx.fillStyle = 'white';
+      ctx.beginPath();
+      ctx.arc(seat.x - 10, seat.y + seat.h / 2, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.closePath();
+    }
+
+    if (gameState.activePlayer !== null) {
+      const seat = seats[gameState.activePlayer];
+      ctx.drawImage(
+        turnArrow,
+        seat.x + seat.w + 10, seat.y + seat.h / 2 - turnArrow.h / 2,
+        turnArrow.w, turnArrow.h
+      );
     }
   }
 }
