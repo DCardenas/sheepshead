@@ -36,28 +36,14 @@ io.sockets.on('connection', socket => {
 
   room.joinRoom(client);
 
-  socket.on('sit', seatNum => {
-    if (room.canSit(seatNum)) {
-      if (client.seat !== null) {
-        clientManager.emitAll('playerStand', {seat: client.seat});
-        room.stand(client);
-      }
-
-      room.sit(seatNum, client);
-
-      clientManager.emitAll('playerSit', {id: client.id, seat: seatNum});
-    } else {
-      socket.emit('warning', {msg: 'Seat already taken!'});
-    }
+  socket.on('userInput', data => {
+    data.data.player = client;
+    room.handleEvent(data);
   });
 
   // Need to add check that they own the room
   socket.on('addAI', () => {
-    const ai = room.addAI();
-
-    if (ai) {
-      clientManager.emitAll('init', {clients: [ai.getInitPack()]});
-    }
+    room.addAI();
   });
 
   socket.on('disconnect', data => {

@@ -58,40 +58,38 @@ class Game {
           seat: i
         });
 
-        this.seats[i] = ai;
-        this.curPlayers += 1;
+        this.room.emitAll('init', { clients: [ ai.getInitPack() ] });
+        this.handleEvent('sit', { seat: ai.seat, player: ai });
       }
     });
 
-    return ai;
+    return ai
   }
 
-  canSit(seatNum) {
-    return this.seats[seatNum] === null;
+  canSit(seat) {
+    return this.seats[seat] === null;
   }
 
-  sit(seatNum, client) {
-    if (this.seats[seatNum] !== null) {
-      return false;
-    } else {
-      this.seats[seatNum] = client;
-      client.seat = seatNum;
-      this.curPlayers += 1;
-
-      this.handleEvent('sit', {game: this, seat: seatNum});
-    }
+  sit(seat, client) {
+    this.seats[seat] = client;
+    client.seat = seat;
+    this.curPlayers += 1;
   }
 
-  stand(client) {
-    this.seats[client.seat] = null;
+  stand(seat) {
+    this.seats[seat] = null;
     this.curPlayers -= 1;
-    client.seat = null;
-
-    this.handleEvent('stand', this);
   }
 
   handleEvent(type, data) {
-    this.stateManager.handleEvent(type, data);
+    this.stateManager.handleEvent(type, data, this, res => {
+      if (res.success) {
+        this.room.emitAll('update', res);
+      } else {
+        this.room.emitOne(data.player.id, 'error-msg', res);
+        console.log(res.msg);
+      }
+    });
   }
 }
 

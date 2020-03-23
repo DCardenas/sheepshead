@@ -1,19 +1,37 @@
 const Game = require('./Game.js');
+const ClientManager = require('./ClientManager.js');
 
 class Room {
   constructor(settings) {
-    this.game = new Game(settings);
-    this.clients = new Map();
+    this.game = new Game(this, settings);
+    this.clientManager = new ClientManager();
+    this.bots = new Map();
     this.id = Math.random();
   }
 
+  emitOne(id, type, data) {
+    this.clientManager.emitOne(id, type, data);
+  }
+
+  emitAll(type, data) {
+    this.clientManager.emitAll(type, data);
+  }
+
+  handleEvent(data) {
+    if (data.type === 'roomEvent') {
+
+    } else {
+      this.game.handleEvent(data.type, data.data);
+    }
+  }
+
   joinRoom(client) {
-    this.clients.set(client.id, client);
+    this.clientManager.add(client);
     client.room = this.id;
   }
 
   leaveRoom(client) {
-    this.clients.delete(client.id);
+    this.clientManager.remove(client.id);
     client.room = null;
 
     if (client.seat) {
@@ -22,7 +40,11 @@ class Room {
   }
 
   addAI() {
-    return this.game.addAI();
+    const ai = this.game.addAI();
+
+    if (ai) {
+      this.bots.set(ai.id, ai);
+    }
   }
 
   canSit(seatNum) {

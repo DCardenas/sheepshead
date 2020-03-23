@@ -25,7 +25,7 @@ for (let i = 0; i < NUM_PLAYERS; i++) {
   seats[i] = seat;
   seat.onclick = btn => {
     if (btn === 1) {
-      socket.emit('sit', seat.num);
+      socket.emit('userInput', {type: 'sit', data: { seat: seat.num }});
     }
   }
 }

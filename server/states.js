@@ -21,19 +21,53 @@ function setupStateManager(gameState) {
       });
     }
   }
-  pregame.handleEvent('sit', {gameState, seat} => {
+  pregame.addCallback('sit', (data, gameState) => {
+    const pack = { success: true, clients: [] };
+
+    // You can't sit here!
+    if (!gameState.canSit(data.seat)) {
+      pack.success = false;
+      pack.msg = 'Seat is already taken.';
+
+      return pack;
+    }
+
+    // You can sit here!
+    pack.sit = {
+      seat: data.seat,
+      id: data.player.id
+    }
+    // But you were sitting elsewhere
+    if (data.player.seat !== null) {
+      pack.stand = {
+        seat: data.player.seat
+      }
+      gameState.stand(data.player.seat);
+    }
+    gameState.sit(data.seat, data.player); // This function sets the player's new seat
+
+    // Check if we should move to the next state
     if (gameState.curPlayers === gameState.maxPlayers) {
       pregame.toExit = true;
     } else if (gameState.curPlayers === 1) {
-      gameState.dealer = seat;
-      gameState.seats[seat].dealer = true;
+      // If this is the first or only player to sit, they are now the dealer
+      gameState.dealer = data.seat;
+      gameState.seats[data.seat].dealer = true;
     }
+
+    pack.dealer = data.seat;
+    pack.clients.push(data.player.getUpdatePack(['seat', 'dealer']));
+
+    return pack;
   });
   pregame.nextState = 'picking';
 
   picking.handleEvent('pick', gameState => {
 
   });
+
+  stateManager.activeState = pregame;
+  return stateManager;
 }
 
 module.exports = setupStateManager;

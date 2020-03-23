@@ -21,10 +21,10 @@ class StateManager {
     return this.states.get(name);
   }
 
-  handleEvent(type, gameState, callback) {
+  handleEvent(type, data, gameState, callback) {
     let updatePack = {};
 
-    updatePack = this.activeState.handleEvent(type, gameState);
+    updatePack = this.activeState.handleEvent(type, data, gameState);
 
     if (type === 'stand' && this.activeState.name !== 'pregame') {
       // Add options for what happens if someone leaves during a game
@@ -32,13 +32,22 @@ class StateManager {
       // Allow anyone to take seat
       // Etc
       this.setState('pregame');
-      return
+
+      updatePack.state = 'pregame';
+      callback(updatePack);
+      return;
     }
 
     if (this.activeState.toExit) {
       this.activeState.exit(gameState);
       this.activeState = this.getState(this.activeState.nextState);
+
+      updatePack.state = this.activeState.name;
+      console.log('Switching to state ' + this.activeState.name);
     }
+
+    callback(updatePack);
+    return
   }
 }
 

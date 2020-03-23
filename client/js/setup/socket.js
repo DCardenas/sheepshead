@@ -26,6 +26,25 @@ export default function setupSocket(clients, seats) {
       });
     }
   });
+
+  socket.on('update', data => {
+    if (data.sit) {
+      const client = clients.get(data.sit.id);
+      seats[data.sit.seat].addPlayer(client);
+    }
+
+    if (data.stand) {
+      seats[data.stand.seat].removePlayer();
+    }
+
+    if (data.clients) {
+      data.clients.forEach(clientData => {
+        const client = clients.get(clientData.id);
+        client.serverUpdate(clientData);
+      });
+    }
+  })
+
   socket.on('remove', data => {
     if (data.clients) {
       data.clients.forEach(id => {

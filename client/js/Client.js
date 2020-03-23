@@ -4,4 +4,10 @@ export default class Client {
       this[key] = data[key];
     }
   }
+
+  serverUpdate(data) {
+    for (let key in data) {
+      this[key] = data[key];
+    }
+  }
 }

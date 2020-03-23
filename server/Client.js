@@ -16,6 +16,22 @@ class Client {
     return pack;
   }
 
+  getUpdatePack(keys) {
+    const pack = {};
+    
+    pack.id = this.id;
+    if (keys.length === 0) {
+      console.log('Trying to get an update pack without requesting keys');
+      return
+    }
+
+    keys.forEach(key => {
+      pack[key] = this[key];
+    });
+
+    return pack;
+  }
+
   emit(type, data) {
     this.socket.emit(type, data);
   }

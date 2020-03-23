@@ -16,12 +16,12 @@ class State {
     this.callbacks.set(type, callback);
   }
 
-  handleEvent(type, data) {
+  handleEvent(type, data, gameState) {
     if (!this.callbacks.has(type)) {
       return
     }
 
-    this.callbacks.get(type)(data);
+    return this.callbacks.get(type)(data, gameState);
   }
 }
 
