@@ -2,11 +2,11 @@ import Compositor from '../Compositor.js';
 import { createGameBGLayer, createSeatLayer, createGameStateLayer } from '../layers/game.js';
 import { createSpectatorBGLayer, createSpectatorLayer } from '../layers/spectator.js';
 
-export default function setupComp(clients, seats, settings, gameState) {
+export default function setupComp(clients, game, settings) {
   const layers = [
-    createGameBGLayer(settings.game, gameState),
-    createSeatLayer(clients, seats, settings),
-    createGameStateLayer(clients, seats, gameState),
+    createGameBGLayer(settings.game, game),
+    createSeatLayer(clients, game.seats, settings),
+    createGameStateLayer(clients, game),
     createSpectatorBGLayer(settings.spec),
     createSpectatorLayer(clients)
   ]

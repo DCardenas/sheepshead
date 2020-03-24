@@ -1,7 +1,7 @@
 const CANVAS_WIDTH = 900;
 const CANVAS_HEIGHT = 600;
 
-export function createGameBGLayer(settings, gameState) {
+export function createGameBGLayer(settings, game) {
   const buffer = document.createElement('canvas');
   buffer.width = CANVAS_WIDTH;
   buffer.height = CANVAS_HEIGHT;
@@ -12,8 +12,11 @@ export function createGameBGLayer(settings, gameState) {
       bctx.fillStyle = settings.bgColor || 'blue';
       bctx.fillRect(0, 0, buffer.width, buffer.height);
 
-      const ui = gameState.ui.states[gameState.state];
+      const ui = game.ui.states[game.state];
       ui.buttons.forEach(button => {
+        if (!button.active) {
+          return
+        }
         if (button.redraw) {
           button.redrawBuffer();
         }
@@ -31,7 +34,7 @@ export function createSeatLayer(clients, seats, settings) {
   return function drawSeatLayer(ctx) {
     let seatNum = 0;
 
-    const self = clients.get(settings.selfID);
+    const self = clients.localClient;
     if (self && self.seat) {
       seatNum = self.seat;
     }
@@ -52,10 +55,12 @@ export function createSeatLayer(clients, seats, settings) {
   }
 }
 
-export function createGameStateLayer(clients, seats, gameState) {
+export function createGameStateLayer(clients, game) {
+  let seats = game.seats;
+
   return function drawGameStateLayer(ctx) {
-    if (gameState.dealer !== null) {
-      const seat = seats[gameState.dealer];
+    if (game.dealer !== null) {
+      const seat = seats[game.dealer];
 
       ctx.fillStyle = 'white';
       ctx.beginPath();

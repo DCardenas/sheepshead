@@ -1,68 +1,47 @@
-import Client from '../Client.js';
+import Client from '../client/Client.js';
 
-export default function setupSocket(clients, seats, gameState) {
-  const socket = io();
-  let selfID = null;
+export default function setupSocket(socket, clients, game) {
+  const seats = game.seats;
+
+  seats.forEach(seat => {
+    seat.button.onclick = btn => {
+      if (btn === 1) {
+        socket.emit('userInput', {type: 'sit', data: { seat: seat.num }});
+      }
+    }
+  });
 
   function createClient(clientData) {
-    const client = new Client(clientData);
-    clients.set(client.id, client);
-
-    if (client.seat !== null) {
-      seats[client.seat].addPlayer(client);
-    }
+    return new Client(clientData);
   }
 
   // REFACTOR THIS CODE //
   socket.on('init', data => {
     if (data.clients) {
       data.clients.forEach(clientData => {
-        createClient(clientData);
+        const client = createClient(clientData);
+        clients.addClient(client);
       });
     }
 
+    if (data.selfID) {
+      clients.selfID = data.selfID;
+    }
+
     if (data.state) {
-      gameState.setState(data.state);
+      game.setState(data.state);
     }
 
     if (data.game) {
-      for (let key in data.game) {
-        if (data.game[key] === null) {
-          continue
-        }
-
-        if (key === 'ai') {
-          data.game.ai.forEach(aiData => {
-            createClient(aiData);
-          });
-        } else {
-          if (gameState[key] !== null) {
-            const seat = seats[gameState[key]]
-            seat.redraw = true;
-
-            if (key === 'activePlayer') {
-              const client = seat.player;
-              client.active = false;
-            }
-          }
-
-          gameState[key] = data.game[key];
-
-          const seat = seats[gameState[key]]
-          seat.redraw = true;
-
-          if (key === 'activePlayer') {
-            const client = seat.player;
-            client.active = true;
-          }
-        }
-      }
+      game.serverUpdate(data.game, clients);
     }
+
+    game.update();
   });
 
   socket.on('update', data => {
     if (data.state) {
-      gameState.setState(data.state);
+      game.setState(data.state);
     }
 
     if (data.sit) {
@@ -78,32 +57,12 @@ export default function setupSocket(clients, seats, gameState) {
       data.clients.forEach(clientData => {
         const client = clients.get(clientData.id);
         client.serverUpdate(clientData);
-        seats[client.seat].redraw = true;
+        game.seats[client.seat].redraw = true;
       });
     }
 
     if (data.game) {
-      for (let key in data.game) {
-        if (key === 'activePlayer') {
-            if (gameState.activePlayer) {
-              const seat = seats[gameState.activePlayer]
-              seat.redraw = true;
-
-              const client = seat.player;
-              client.active = false;
-            }
-
-            gameState[key] = data.game[key];
-
-            const seat = seats[gameState.activePlayer]
-            seat.redraw = true;
-
-            const client = seat.player;
-            client.active = true;
-        } else {
-          gameState[key] = data.game[key];
-        }
-      }
+      game.serverUpdate(data.game, clients);
     }
   });
 
@@ -112,20 +71,13 @@ export default function setupSocket(clients, seats, gameState) {
       data.clients.forEach(id => {
         const client = clients.get(id);
         if (client.seat !== null) {
-          seats[client.seat].removePlayer();
+          game.removePlayer(id);
         }
-        clients.delete(id);
+        clients.removeClient(id);
       });
     }
-  });
 
-  socket.on('playerSit', data => {
-    // Do a sanity check that the user is still connected!! //
-    seats[data.seat].addPlayer(clients.get(data.id));
-  });
-
-  socket.on('playerStand', data => {
-    seats[data.seat].removePlayer();
+    game.update();
   });
 
   socket.on('warning', data => {

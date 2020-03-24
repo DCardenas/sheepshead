@@ -27,6 +27,14 @@ export default class Seat {
     return this.hitbox.bounds;
   }
 
+  getPlayerID() {
+    if (this.player) {
+      return this.player.id
+    }
+
+    return this.player
+  }
+
   createBuffer() {
     this.buffer = document.createElement('canvas');
     this.buffer.width = this.w;

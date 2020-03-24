@@ -1,11 +1,12 @@
-import Card from './Card.js';
-import Hitbox from './Hitbox.js';
+import Card from '../Card.js';
+import Hitbox from '../Hitbox.js';
 
 export default class Client {
   constructor(data) {
     this.hand = new Map();
     this.createBuffer();
     this.hitbox = new Hitbox(0, 0, 1, 1, this);
+    this.isHost = false;
 
     this.serverUpdate(data);
   }
