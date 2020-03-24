@@ -41,6 +41,12 @@ class Game {
     this.partner = null;
     this.deck.populate();
     this.blind.clear();
+
+    this.forEachSeat(player => {
+      if (player) {
+        player.hand.clear();
+      }
+    });
   }
 
   forEachSeat(callback) {

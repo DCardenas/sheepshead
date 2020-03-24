@@ -1,9 +1,5 @@
 const CANVAS_WIDTH = 900;
 const CANVAS_HEIGHT = 600;
-const turnArrow = new Image();
-turnArrow.src = '/client/img/turn_arrow.png';
-turnArrow.w = 50;
-turnArrow.h = 25;
 
 export function createGameBGLayer(settings) {
   const buffer = document.createElement('canvas');
@@ -54,30 +50,9 @@ export function createGameStateLayer(clients, seats, gameState) {
 
       ctx.fillStyle = 'white';
       ctx.beginPath();
-      ctx.arc(seat.x - 10, seat.y + seat.h / 2, 5, 0, Math.PI * 2);
+      ctx.arc(seat.x, seat.y + seat.h / 2, 5, 0, Math.PI * 2);
       ctx.fill();
       ctx.closePath();
     }
-
-    if (gameState.activePlayer !== null) {
-      const seat = seats[gameState.activePlayer];
-      ctx.drawImage(
-        turnArrow,
-        seat.x + seat.w + 10, seat.y + seat.h / 2 - turnArrow.h / 2,
-        turnArrow.w, turnArrow.h
-      );
-    }
-  }
-}
-
-export function createCardLayer(clients, seats) {
-  return function drawCardLayer(ctx) {
-    this.seats.forEach(seat => {
-      if (seat.player && seat.player.hand) {
-        seat.player.hand.forEach(card => {
-          
-        });
-      }
-    });
   }
 }

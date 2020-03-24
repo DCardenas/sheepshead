@@ -16,6 +16,9 @@ const gameState = {
   dealer: null,
   activePlayer: null
 }
+gameState.setState = state => {
+  gameState.state = state;
+}
 const seats = {
   0: null,
   1: null,

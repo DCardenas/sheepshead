@@ -16,6 +16,7 @@ class Client {
     pack.id = this.id;
     pack.name = this.name;
     pack.seat = this.seat;
+    pack.hand = this.hand;
     return pack;
   }
 

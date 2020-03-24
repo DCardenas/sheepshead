@@ -21,13 +21,45 @@ export default function setupSocket(clients, seats, gameState) {
     }
 
     if (data.game) {
-      data.game.ai.forEach(aiData => {
-        createClient(aiData);
-      });
+      for (let key in data.game) {
+        if (data.game[key] === null) {
+          continue
+        }
+
+        if (key === 'ai') {
+          data.game.ai.forEach(aiData => {
+            createClient(aiData);
+          });
+        } else {
+          if (gameState[key] !== null) {
+            const seat = seats[gameState[key]]
+            seat.redraw = true;
+
+            if (key === 'activePlayer') {
+              const client = seat.player;
+              client.active = false;
+            }
+          }
+
+          gameState[key] = data.game[key];
+
+          const seat = seats[gameState[key]]
+          seat.redraw = true;
+
+          if (key === 'activePlayer') {
+            const client = seat.player;
+            client.active = true;
+          }
+        }
+      }
     }
   });
 
   socket.on('update', data => {
+    if (data.state) {
+      gameState.setState('pregame');
+    }
+
     if (data.sit) {
       const client = clients.get(data.sit.id);
       seats[data.sit.seat].addPlayer(client);
@@ -47,10 +79,28 @@ export default function setupSocket(clients, seats, gameState) {
 
     if (data.game) {
       for (let key in data.game) {
-        gameState[key] = data.game[key];
+        if (key === 'activePlayer') {
+            if (gameState.activePlayer) {
+              const seat = seats[gameState.activePlayer]
+              seat.redraw = true;
+
+              const client = seat.player;
+              client.active = false;
+            }
+
+            gameState[key] = data.game[key];
+
+            const seat = seats[gameState.activePlayer]
+            seat.redraw = true;
+
+            const client = seat.player;
+            client.active = true;
+        } else {
+          gameState[key] = data.game[key];
+        }
       }
     }
-  })
+  });
 
   socket.on('remove', data => {
     if (data.clients) {

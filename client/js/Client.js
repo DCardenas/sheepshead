@@ -1,75 +1,17 @@
-import Hitbox from './Hitbox.js';
-
-class Card {
-  constructor(face, suit, parent) {
-    this.f = face;
-    this.s = suit;
-
-    this.hover = false;
-    this.selected = false;
-
-    this.x = null;
-    this.y = null;
-    this.w = 45;
-    this.h = 70;
-
-    this.hitbox = new Hitbox(0, 0, 1, 1);
-
-    this.createBuffer();
-  }
-
-  get bounds() {
-
-  }
-
-  createBuffer() {
-    this.buffer = document.createElement('canvas');
-    this.buffer.width = this.w;
-    this.buffer.height = this.h;
-
-    this.redrawBuffer();
-  }
-
-  redrawBuffer() {
-    const ctx = this.buffer.getContext('2d');
-
-    ctx.strokeStyle = 'black';
-    ctx.lineWidth = 4;
-    ctx.fillStyle = 'white';
-
-    ctx.beginPath();
-    ctx.rect(0, 0, this.buffer.width, this.buffer.height);
-    ctx.fill();
-    ctx.stroke();
-    ctx.closePath();
-
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillStyle = 'black';
-
-    if (this.s === 'H' || this.s === 'D') {
-      ctx.fillStyle = 'red';
-    }
-
-    ctx.font = '22px Arial';
-
-    ctx.fillText(this.f + this.s, this.w / 2, this.h * 0.55);
-  }
-}
+import Card from './Card.js';
 
 export default class Client {
   constructor(data) {
-    for (let key in data) {
-      this[key] = data[key];
-    }
-
+    this.hand = new Map();
     this.createBuffer();
+
+    this.serverUpdate(data);
   }
 
   createBuffer() {
     this.buffer = document.createElement('canvas');
     this.buffer.width = 300;
-    this.buffer.height = 220;
+    this.buffer.height = 150;
 
     this.redrawBuffer();
   }
@@ -78,17 +20,20 @@ export default class Client {
     const ctx = this.buffer.getContext('2d');
 
     ctx.fillStyle = 'green';
+    if (this.active) {
+      ctx.fillStyle = 'yellow';
+    }
     ctx.fillRect(0, 0, this.buffer.width, this.buffer.height);
 
+    ctx.fillStyle = 'black';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(this.name, this.width / 2, this.height / 2);
+    ctx.font = '30px Arial';
+    ctx.fillText(this.name, this.buffer.width / 2, 45);
 
-    if (this.hand) {
-      this.hand.forEach((card, i) => {
-        ctx.drawImage(card.buffer, card.x, card.y);
-      });
-    }
+    this.hand.forEach((card, i) => {
+      ctx.drawImage(card.buffer, card.x - card.w / 2, card.y - card.h / 2);
+    });
 
     this.redraw = false;
   }
@@ -96,15 +41,21 @@ export default class Client {
   serverUpdate(data) {
     for (let key in data) {
       if (key === 'hand') {
-        this.hand = [];
+        const totalCards = data[key].cards.length;
         data[key].cards.forEach((cardData, i) => {
-          const card = new Card(cardData.f, cardData.s, this);
-          const x = i * card.w + 10;
-          const y = 10;
+          if (this.hand.has(cardData.id)) {
+            return
+          }
+
+          const card = new Card(cardData, this);
+          const x = this.buffer.width / 2 + (i + 0.5 - totalCards / 2) * card.w;
+          const y = this.buffer.height - card.h / 2 - 10;
+
+          console.log(x);
 
           card.x = x;
           card.y = y;
-          this.hand.push(card);
+          this.hand.set(card.id, card);
         });
 
         this.redraw = true;
