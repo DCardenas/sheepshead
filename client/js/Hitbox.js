@@ -8,8 +8,8 @@ export default class Hitbox {
   }
 
   get bounds() {
-    const x = this.parent.x + this.parent.w * this.x;
-    const y = this.parent.y + this.parent.h * this.y;
+    const x = this.parent.x + this.parent.w * this.x - this.parent.w / 2;
+    const y = this.parent.y + this.parent.h * this.y - this.parent.h / 2;
 
     return {
       left: x,

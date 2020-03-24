@@ -23,14 +23,6 @@ export function createGameBGLayer(settings) {
 }
 
 export function createSeatLayer(clients, seats, settings) {
-  const seatPos = [
-    {x: 0.5, y: 0.90},
-    {x: 0.10, y: 0.50},
-    {x: 0.33, y: 0.10},
-    {x: 0.66, y: 0.10},
-    {x: 0.90, y: 0.50},
-  ]
-
   return function drawSeatLayer(ctx) {
     let seatNum = 0;
 
@@ -42,18 +34,12 @@ export function createSeatLayer(clients, seats, settings) {
     const NUM_PLAYERS = 5;
     for (let i = 0; i < NUM_PLAYERS; i++) {
       const seat = seats[seatNum];
-      const pos = seatPos[i];
 
       if (seat.redraw) {
         seat.redrawBuffer();
       }
 
-      const x = pos.x * CANVAS_WIDTH - seat.w / 2;
-      const y = pos.y * CANVAS_HEIGHT - seat.h / 2;
-      seat.x = x;
-      seat.y = y;
-
-      ctx.drawImage(seat.button, x, y);
+      ctx.drawImage(seat.buffer, seat.x - seat.w / 2, seat.y - seat.h / 2);
 
       seatNum += 1;
       seatNum %= NUM_PLAYERS;
@@ -81,5 +67,17 @@ export function createGameStateLayer(clients, seats, gameState) {
         turnArrow.w, turnArrow.h
       );
     }
+  }
+}
+
+export function createCardLayer(clients, seats) {
+  return function drawCardLayer(ctx) {
+    this.seats.forEach(seat => {
+      if (seat.player && seat.player.hand) {
+        seat.player.hand.forEach(card => {
+          
+        });
+      }
+    });
   }
 }

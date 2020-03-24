@@ -19,8 +19,10 @@ export default function setupMouse(canvas, seats) {
     }
 
     seats.forEach(seat => {
-      if (collisionPointRect(mouse, seat.bounds)) {
-        mouse.enter(seat, 'pointer');
+      const hit = seat.checkMouseHover(mouse.x, mouse.y);
+
+      if (hit.target) {
+        mouse.enter(hit.target, 'pointer');
       }
     });
   });

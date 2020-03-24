@@ -38,7 +38,11 @@ export default class MouseManager {
   enter(obj, cursor) {
     this.hover = obj;
     obj.hover = true;
-    obj.redraw = true;
+
+    while (obj.parent) {
+      obj = obj.parent;
+      obj.redraw = true;
+    }
 
     this.setCursor(cursor || 'default');
   }
@@ -48,8 +52,13 @@ export default class MouseManager {
       return
     }
 
-    this.hover.hover = false;
-    this.hover.redraw = true;
+    let obj = this.hover;
+    obj.hover = false;
+
+    while (obj.parent) {
+      obj = obj.parent;
+    }
+    obj.redraw = true;
     this.hover = null;
 
     this.setCursor('default');

@@ -18,6 +18,7 @@ class StateManager {
 
     const updatePack = {}
     updatePack.game = this.activeState.enter(gameState);
+    updatePack.state = this.activeState.name;
     callback(updatePack);
   }
 
@@ -48,13 +49,10 @@ class StateManager {
       return
     }
 
+    callback(updatePack);
     if (this.activeState.toExit) {
       this.setState(this.activeState.nextState, gameState, callback);
-      updatePack.state = this.activeState.name;
     }
-
-    callback(updatePack);
-    return
   }
 }
 

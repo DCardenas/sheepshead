@@ -41,6 +41,7 @@ export default function setupSocket(clients, seats, gameState) {
       data.clients.forEach(clientData => {
         const client = clients.get(clientData.id);
         client.serverUpdate(clientData);
+        seats[client.seat].redraw = true;
       });
     }
 
