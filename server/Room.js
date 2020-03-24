@@ -63,6 +63,7 @@ class Room {
   getInitPack() {
     const pack = {
       clients: this.clientManager.getInitPackAll(),
+      state: this.game.activeState,
       game: this.game.getInitPack()
     }
 

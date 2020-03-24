@@ -1,7 +1,7 @@
 import MouseManager from '../input/Mouse.js';
 import { collisionPointRect } from '../utils.js';
 
-export default function setupMouse(canvas, seats) {
+export default function setupMouse(canvas, seats, settings) {
   const mouse = new MouseManager();
   ['mousemove', 'click'].forEach(type => {
     mouse.listenTo(document, type);
@@ -19,7 +19,7 @@ export default function setupMouse(canvas, seats) {
     }
 
     seats.forEach(seat => {
-      const hit = seat.checkMouseHover(mouse.x, mouse.y);
+      const hit = seat.checkMouseHover(mouse.x, mouse.y, settings);
 
       if (hit.target) {
         mouse.enter(hit.target, 'pointer');

@@ -36,9 +36,6 @@ export default class Seat {
   redrawBuffer() {
     const ctx = this.buffer.getContext('2d');
 
-    /*ctx.fillStyle = 'green';
-    ctx.fillRect(0, 0, this.w, this.h);*/
-
     if (!this.player) {
       this.button.redrawBuffer();
       ctx.drawImage(
@@ -56,23 +53,35 @@ export default class Seat {
 
   addPlayer(player) {
     this.player = player;
-    player.seat = this.num;
+    player.x = this.x;
+    player.y = this.y;
+    player.parent = this;
     this.redrawBuffer();
     player.redrawBuffer();
   }
 
   removePlayer() {
+    this.player.x = null;
+    this.player.y = null;
     this.player = null;
+    this.player.parent = null;
     this.redrawBuffer();
   }
 
-  checkMouseHover(x, y) {
+  checkMouseHover(x, y, settings) {
     const result = {
       target: null
     }
 
     if (this.player) {
-
+      if (this.player.id === settings.selfID) {
+        this.player.hand.forEach(card => {
+          const rect = card.bounds;
+          if (collisionPointRect({x: x, y: y}, rect)) {
+            result.target = card;
+          }
+        })
+      }
     } else {
       const rect = this.button.bounds;
       if (collisionPointRect({x: x, y: y}, rect)) {

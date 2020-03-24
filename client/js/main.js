@@ -1,4 +1,5 @@
 import Seat from './Seat.js';
+import createUI from './ui/ui.js';
 import setupSocket from './setup/socket.js';
 import setupCanvas from './setup/canvas.js';
 import setupComp from './setup/comp.js';
@@ -6,7 +7,24 @@ import setupMouse from './setup/mouse.js';
 import setupKeyboard from './setup/keyboard.js';
 import { createObjectForEach } from './utils.js';
 
+const CANVAS_WIDTH = 900;
+const CANVAS_HEIGHT = 600;
 const { canvas, ctx } = setupCanvas();
+const settings = {
+  selfId: null,
+  game: {
+    bgColor: '#161642',
+    x: 0,
+    y: 0,
+    w: CANVAS_WIDTH,
+    h: CANVAS_HEIGHT,
+    redraw: true
+  },
+  spec: {
+    bgColor: 'grey', 
+    redraw: true
+  }
+}
 const clients = new Map();
 
 createObjectForEach();
@@ -14,10 +32,12 @@ createObjectForEach();
 const gameState = {
   state: 'pregame',
   dealer: null,
-  activePlayer: null
+  activePlayer: null,
+  ui: null
 }
 gameState.setState = state => {
   gameState.state = state;
+  settings.game.redraw = true;
 }
 const seats = {
   0: null,
@@ -26,8 +46,6 @@ const seats = {
   3: null,
   4: null
 }
-const CANVAS_WIDTH = 900;
-const CANVAS_HEIGHT = 600;
 const seatPos = [
   {x: 0.5, y: 0.85},
   {x: 0.17, y: 0.50},
@@ -52,15 +70,6 @@ for (let i = 0; i < NUM_PLAYERS; i++) {
   seats[i] = seat;
 }
 
-const settings = {
-  selfId: null,
-  game: {
-  bgColor: '#161642', redraw: true
-  },
-  spec: {
-  bgColor: 'grey', redraw: true
-  }
-}
 const socket = setupSocket(clients, seats, gameState);
 socket.on('init', data => {
   if (data.selfID) {
@@ -68,8 +77,9 @@ socket.on('init', data => {
   }
 });
 
+gameState.ui = createUI(socket, settings);
 const keyboard = setupKeyboard(socket);
-const mouse = setupMouse(canvas, seats);
+const mouse = setupMouse(canvas, seats, settings);
 const comp = setupComp(clients, seats, settings, gameState);
 
 function loop() {

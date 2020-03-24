@@ -1,7 +1,7 @@
 const CANVAS_WIDTH = 900;
 const CANVAS_HEIGHT = 600;
 
-export function createGameBGLayer(settings) {
+export function createGameBGLayer(settings, gameState) {
   const buffer = document.createElement('canvas');
   buffer.width = CANVAS_WIDTH;
   buffer.height = CANVAS_HEIGHT;
@@ -11,6 +11,15 @@ export function createGameBGLayer(settings) {
       const bctx = buffer.getContext('2d');
       bctx.fillStyle = settings.bgColor || 'blue';
       bctx.fillRect(0, 0, buffer.width, buffer.height);
+
+      const ui = gameState.ui.states[gameState.state];
+      ui.buttons.forEach(button => {
+        if (button.redraw) {
+          button.redrawBuffer();
+        }
+        bctx.drawImage(button.buffer, button.x - button.w / 2, button.y - button.h / 2);
+      });
+
       settings.redraw = false;
     }
 

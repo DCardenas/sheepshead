@@ -5,6 +5,7 @@ export default class Card {
     this.f = data.f;
     this.s = data.s;
     this.id = data.id;
+    this.parent = parent;
 
     this.hover = false;
     this.selected = false;
@@ -14,13 +15,25 @@ export default class Card {
     this.w = 45;
     this.h = 70;
 
-    this.hitbox = new Hitbox(0, 0, 1, 1);
+    this.hitbox = new Hitbox(0, 0, 1, 1, this);
 
     this.createBuffer();
   }
 
   get bounds() {
+    if (!this.parent) {
+      return this.hitbox.bounds
+    }
 
+    const parentRect = this.parent.bounds;
+    const ourRect = this.hitbox.bounds;
+
+    return {
+      left: parentRect.left + ourRect.left,
+      right: parentRect.left + ourRect.right,
+      top: parentRect.top + ourRect.top,
+      bot: parentRect.top + ourRect.bot
+    }
   }
 
   createBuffer() {
@@ -37,6 +50,10 @@ export default class Card {
     ctx.strokeStyle = 'black';
     ctx.lineWidth = 4;
     ctx.fillStyle = 'white';
+
+    if (this.hover) {
+      ctx.fillStyle = 'yellow';
+    }
 
     ctx.beginPath();
     ctx.rect(0, 0, this.buffer.width, this.buffer.height);

@@ -1,11 +1,17 @@
 import Card from './Card.js';
+import Hitbox from './Hitbox.js';
 
 export default class Client {
   constructor(data) {
     this.hand = new Map();
     this.createBuffer();
+    this.hitbox = new Hitbox(0, 0, 1, 1, this);
 
     this.serverUpdate(data);
+  }
+
+  get bounds() {
+    return this.parent.bounds;
   }
 
   createBuffer() {
@@ -32,6 +38,7 @@ export default class Client {
     ctx.fillText(this.name, this.buffer.width / 2, 45);
 
     this.hand.forEach((card, i) => {
+      card.redrawBuffer();
       ctx.drawImage(card.buffer, card.x - card.w / 2, card.y - card.h / 2);
     });
 
@@ -50,8 +57,6 @@ export default class Client {
           const card = new Card(cardData, this);
           const x = this.buffer.width / 2 + (i + 0.5 - totalCards / 2) * card.w;
           const y = this.buffer.height - card.h / 2 - 10;
-
-          console.log(x);
 
           card.x = x;
           card.y = y;

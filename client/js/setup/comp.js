@@ -4,7 +4,7 @@ import { createSpectatorBGLayer, createSpectatorLayer } from '../layers/spectato
 
 export default function setupComp(clients, seats, settings, gameState) {
   const layers = [
-    createGameBGLayer(settings.game),
+    createGameBGLayer(settings.game, gameState),
     createSeatLayer(clients, seats, settings),
     createGameStateLayer(clients, seats, gameState),
     createSpectatorBGLayer(settings.spec),

@@ -13,11 +13,16 @@ export default function setupSocket(clients, seats, gameState) {
     }
   }
 
+  // REFACTOR THIS CODE //
   socket.on('init', data => {
     if (data.clients) {
       data.clients.forEach(clientData => {
         createClient(clientData);
       });
+    }
+
+    if (data.state) {
+      gameState.setState(data.state);
     }
 
     if (data.game) {
@@ -57,7 +62,7 @@ export default function setupSocket(clients, seats, gameState) {
 
   socket.on('update', data => {
     if (data.state) {
-      gameState.setState('pregame');
+      gameState.setState(data.state);
     }
 
     if (data.sit) {

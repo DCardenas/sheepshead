@@ -34,6 +34,10 @@ class Game {
     this.stateManager = setupStateManager(this);
   }
 
+  get activeState() {
+    return this.stateManager.activeState.name;
+  }
+
   reset() {
     this.activePlayer = null;
     this.dealer = null;
