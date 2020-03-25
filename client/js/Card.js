@@ -15,6 +15,8 @@ export default class Card {
     this.w = 45;
     this.h = 70;
 
+    this.bgColor = 'white';
+
     this.hitbox = new Hitbox(0, 0, 1, 1, this);
 
     this.createBuffer();
@@ -44,16 +46,24 @@ export default class Card {
     this.redrawBuffer();
   }
 
+  onenter() {
+    this.hover = true;
+    this.y -= 10;
+    this.bgColor = 'yellow';
+  }
+
+  onexit() {
+    this.hover = false;
+    this.y += 10;
+    this.bgColor = 'white';
+  }
+
   redrawBuffer() {
     const ctx = this.buffer.getContext('2d');
 
     ctx.strokeStyle = 'black';
     ctx.lineWidth = 4;
-    ctx.fillStyle = 'white';
-
-    if (this.hover) {
-      ctx.fillStyle = 'yellow';
-    }
+    ctx.fillStyle = this.bgColor;
 
     ctx.beginPath();
     ctx.rect(0, 0, this.buffer.width, this.buffer.height);

@@ -17,15 +17,15 @@ export default function setupSocket(socket, clients, game) {
 
   // REFACTOR THIS CODE //
   socket.on('init', data => {
+    if (data.selfID) {
+      clients.selfID = data.selfID;
+    }
+
     if (data.clients) {
       data.clients.forEach(clientData => {
         const client = createClient(clientData);
         clients.addClient(client);
       });
-    }
-
-    if (data.selfID) {
-      clients.selfID = data.selfID;
     }
 
     if (data.state) {
@@ -34,6 +34,17 @@ export default function setupSocket(socket, clients, game) {
 
     if (data.game) {
       game.serverUpdate(data.game, clients);
+
+      if (data.game.ai) {
+        data.game.ai.forEach(aiData => {
+          const ai = createClient(aiData);
+          clients.addClient(ai);
+
+          if (ai.seat) {
+            game.addPlayer(ai.seat, ai);
+          }
+        });
+      }
     }
 
     game.update();
@@ -45,17 +56,17 @@ export default function setupSocket(socket, clients, game) {
     }
 
     if (data.sit) {
-      const client = clients.get(data.sit.id);
-      seats[data.sit.seat].addPlayer(client);
+      const client = clients.getClientByID(data.sit.id);
+      game.addPlayer(data.sit.seat, client);
     }
 
     if (data.stand) {
-      seats[data.stand.seat].removePlayer();
+      game.removePlayer(data.stand.seat);
     }
 
     if (data.clients) {
       data.clients.forEach(clientData => {
-        const client = clients.get(clientData.id);
+        const client = clients.getClientByID(clientData.id);
         client.serverUpdate(clientData);
         game.seats[client.seat].redraw = true;
       });
@@ -63,15 +74,26 @@ export default function setupSocket(socket, clients, game) {
 
     if (data.game) {
       game.serverUpdate(data.game, clients);
+
+      if (data.game.ai) {
+        data.game.ai.forEach(aiData => {
+          const ai = createClient(aiData);
+          clients.addClient(ai);
+
+          if (ai.seat) {
+            game.addPlayer(ai.seat, ai);
+          }
+        });
+      }
     }
   });
 
   socket.on('remove', data => {
     if (data.clients) {
       data.clients.forEach(id => {
-        const client = clients.get(id);
+        const client = clients.getClientByID(id);
         if (client.seat !== null) {
-          game.removePlayer(id);
+          game.removePlayer(client.seat);
         }
         clients.removeClient(id);
       });

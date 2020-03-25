@@ -33,9 +33,6 @@ io.sockets.on('connection', socket => {
 
   room.joinRoom(client);
   clientManager.onClientJoin(client);
-  client.emit('init', {
-    selfID: client.id, game: room.game.getInitPack()
-  });
 
   socket.on('userInput', data => {
     data.data.player = client;

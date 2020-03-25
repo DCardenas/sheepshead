@@ -32,7 +32,7 @@ const settings = {
 setupSocket(socket, clients, game);
 
 const keyboard = setupKeyboard(socket);
-const mouse = setupMouse(canvas, game, settings);
+const mouse = setupMouse(canvas, game);
 const comp = setupComp(clients, game, settings);
 
 function loop() {

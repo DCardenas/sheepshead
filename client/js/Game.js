@@ -45,6 +45,14 @@ export default class Game {
     return null
   }
 
+  addPlayer(seat, player) {
+    this.seats[seat].addPlayer(player);
+  }
+
+  removePlayer(seat) {
+    this.seats[seat].removePlayer();
+  }
+
   update() {
     this.ui.update(this);
   }
@@ -53,6 +61,9 @@ export default class Game {
     let update = false;
 
     for (let key in data) {
+      if (key === 'ai') {
+        continue
+      }
       if (data[key] !== null) {
         this[key] = data[key];
 

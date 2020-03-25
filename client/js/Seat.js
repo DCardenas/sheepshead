@@ -76,23 +76,23 @@ export default class Seat {
     this.redrawBuffer();
   }
 
-  checkMouseHover(x, y, settings) {
+  checkMouseHover(pos) {
     const result = {
       target: null
     }
 
     if (this.player) {
-      if (this.player.id === settings.selfID) {
+      if (this.player.isHost) {
         this.player.hand.forEach(card => {
           const rect = card.bounds;
-          if (collisionPointRect({x: x, y: y}, rect)) {
+          if (collisionPointRect(pos, rect)) {
             result.target = card;
           }
         })
       }
     } else {
       const rect = this.button.bounds;
-      if (collisionPointRect({x: x, y: y}, rect)) {
+      if (collisionPointRect(pos, rect)) {
         result.target = this.button;
       }
     }

@@ -15,6 +15,7 @@ export default class Button {
     this.buffer = document.createElement('canvas');
     this.buffer.width = this.w;
     this.buffer.height = this.h;
+    this.bgColor = '#e37724';
 
     this.redrawBuffer();
   }
@@ -37,11 +38,7 @@ export default class Button {
 
   redrawBuffer() {
     const ctx = this.buffer.getContext('2d');
-    ctx.fillStyle = '#e37724';
-
-    if (this.hover) {
-      ctx.fillStyle = '#d15706';
-    }
+    ctx.fillStyle = this.bgColor;
 
     ctx.fillRect(0, 0, this.w, this.h);
 
@@ -51,5 +48,15 @@ export default class Button {
     ctx.font = '24px Arial';
 
     ctx.fillText(this.text, this.w / 2, this.h * 0.55);
+  }
+
+  onenter() {
+    this.hover = true;
+    this.bgColor = '#d15707';
+  }
+
+  onexit() {
+    this.hover = false;
+    this.bgColor = '#e37724';
   }
 }

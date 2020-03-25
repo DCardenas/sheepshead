@@ -37,7 +37,10 @@ export default class MouseManager {
 
   enter(obj, cursor) {
     this.hover = obj;
-    obj.hover = true;
+
+    if (obj.onenter) {
+      obj.onenter();
+    }
 
     while (obj.parent) {
       obj = obj.parent;
@@ -53,7 +56,10 @@ export default class MouseManager {
     }
 
     let obj = this.hover;
-    obj.hover = false;
+
+    if (obj.onexit) {
+      obj.onexit();
+    }
 
     while (obj.parent) {
       obj = obj.parent;

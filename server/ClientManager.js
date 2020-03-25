@@ -16,6 +16,7 @@ class ClientManager {
   onClientJoin(client) {
     this.emitAll('init', {clients: [client.getInitPack()]});
     this.add(client);
+    client.emit('init', {selfID: client.id});
     client.emit('init', client.room.getInitPack());
   }
 
