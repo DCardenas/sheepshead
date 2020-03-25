@@ -1,6 +1,6 @@
 import Seat from '../Seat.js';
 
-export default function setupSeats(width, height, socket) {
+export default function setupSeats(width, height, seatPos, numPlayers) {
   const seats = {
     0: null,
     1: null,
@@ -8,15 +8,8 @@ export default function setupSeats(width, height, socket) {
     3: null,
     4: null
   }
-  const seatPos = [
-    {x: 0.5, y: 0.85},
-    {x: 0.17, y: 0.50},
-    {x: 0.30, y: 0.15},
-    {x: 0.69, y: 0.15},
-    {x: 0.83, y: 0.50},
-  ]
-  const NUM_PLAYERS = 5;
-  for (let i = 0; i < NUM_PLAYERS; i++) {
+
+  for (let i = 0; i < numPlayers; i++) {
     const seat = new Seat(i);
     const pos = seatPos[i];
     const x = pos.x * width;

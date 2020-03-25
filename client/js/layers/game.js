@@ -7,7 +7,7 @@ export function createGameBGLayer(settings, game) {
   buffer.height = CANVAS_HEIGHT;
 
   return function drawBGLayer(ctx) {
-    if (settings.redraw) {
+    if (game.redraw || game.ui.redraw) {
       const bctx = buffer.getContext('2d');
       bctx.fillStyle = settings.bgColor || 'blue';
       bctx.fillRect(0, 0, buffer.width, buffer.height);
@@ -23,7 +23,8 @@ export function createGameBGLayer(settings, game) {
         bctx.drawImage(button.buffer, button.x - button.w / 2, button.y - button.h / 2);
       });
 
-      settings.redraw = false;
+      game.ui.redraw = false;
+      game.redraw = false;
     }
 
     ctx.drawImage(buffer, 0, 0);

@@ -50,12 +50,14 @@ export default class Card {
     this.hover = true;
     this.y -= 10;
     this.bgColor = 'yellow';
+    this.redraw = true;
   }
 
   onexit() {
     this.hover = false;
     this.y += 10;
     this.bgColor = 'white';
+    this.redraw = true;
   }
 
   redrawBuffer() {

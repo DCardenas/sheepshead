@@ -44,6 +44,8 @@ export default class Seat {
   redrawBuffer() {
     const ctx = this.buffer.getContext('2d');
 
+    ctx.clearRect(0, 0, this.w, this.h);
+
     if (!this.player) {
       this.button.redrawBuffer();
       ctx.drawImage(
@@ -71,8 +73,8 @@ export default class Seat {
   removePlayer() {
     this.player.x = null;
     this.player.y = null;
-    this.player = null;
     this.player.parent = null;
+    this.player = null;
     this.redrawBuffer();
   }
 

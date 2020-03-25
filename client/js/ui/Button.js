@@ -53,10 +53,12 @@ export default class Button {
   onenter() {
     this.hover = true;
     this.bgColor = '#d15707';
+    this.redraw = true;
   }
 
   onexit() {
     this.hover = false;
     this.bgColor = '#e37724';
+    this.redraw = true;
   }
 }

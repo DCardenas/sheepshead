@@ -12,7 +12,13 @@ export default function setupSocket(socket, clients, game) {
   });
 
   function createClient(clientData) {
-    return new Client(clientData);
+    const client = new Client(clientData);
+
+    if (client.seat !== null) {
+      game.addPlayer(client.seat, client);
+    }
+
+    return client
   }
 
   // REFACTOR THIS CODE //
@@ -39,10 +45,6 @@ export default function setupSocket(socket, clients, game) {
         data.game.ai.forEach(aiData => {
           const ai = createClient(aiData);
           clients.addClient(ai);
-
-          if (ai.seat) {
-            game.addPlayer(ai.seat, ai);
-          }
         });
       }
     }
@@ -79,10 +81,6 @@ export default function setupSocket(socket, clients, game) {
         data.game.ai.forEach(aiData => {
           const ai = createClient(aiData);
           clients.addClient(ai);
-
-          if (ai.seat) {
-            game.addPlayer(ai.seat, ai);
-          }
         });
       }
     }

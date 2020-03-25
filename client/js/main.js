@@ -20,8 +20,7 @@ const clients = new ClientManager();
 
 const settings = {
   game: {
-    bgColor: '#161642',
-    redraw: true
+    bgColor: '#161642'
   },
   spec: {
     bgColor: 'grey',
