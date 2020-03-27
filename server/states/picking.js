@@ -4,10 +4,12 @@ function createPickingState() {
   const picking = new State('picking');
 
   picking.enter = gameState => {
-    const pack = {};
+    const pack = {
+      game: {}
+    };
 
     gameState.nextPlayer();
-    pack.activePlayer = gameState.activePlayer;
+    pack.game.activePlayer = gameState.activePlayer;
 
     return pack
   }

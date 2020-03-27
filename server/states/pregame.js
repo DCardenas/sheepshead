@@ -4,28 +4,30 @@ function createPregameState() {
   const pregame = new State('pregame');
 
   pregame.enter = gameState => {
-    const pack = {};
+    const pack = {
+      game: {},
+      clients: []
+    };
 
     gameState.reset();
 
     if (gameState.curPlayers !== 0) {
-      let dealerFound = false;
-      gameState.forEachSeat((player, i) => {
-        if (!dealerFound && player) {
-          gameState.dealer = i;
-          player.dealer = true;
-          dealerFound = true;
-        }
-      });
+      gameState.determineDealer();
     }
 
-    pack.dealer = gameState.dealer;
-    pack.picker = gameState.picker;
-    pack.partner = gameState.partner;
-    pack.activePlayer = gameState.activePlayer;
-    pack.state = pregame.name;
+    pack.game.dealer = gameState.dealer;
+    pack.game.picker = gameState.picker;
+    pack.game.partner = gameState.partner;
+    pack.game.activePlayer = gameState.activePlayer;
+    pack.game.state = pregame.name;
 
-    return pack;
+    gameState.forEachSeat(player => {
+      if (player) {
+        pack.clients.push(player.getUpdatePack(['hand']));
+      }
+    });
+
+    return pack
   }
   pregame.exit = gameState => {
     gameState.deal();
@@ -35,7 +37,7 @@ function createPregameState() {
       pack.clients.push(player.getUpdatePack(['hand']));
     });
 
-    return pack;
+    return pack
   }
   pregame.addCallback('sit', (data, gameState) => {
     const pack = { clients: [], game: {} };

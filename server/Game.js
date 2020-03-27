@@ -53,6 +53,22 @@ class Game {
     });
   }
 
+  determineDealer() {
+    if (this.curPlayers === 0) {
+      this.dealer = null;
+      return 
+    }
+
+    let dealerFound = false;
+    this.forEachSeat((player, i) => {
+      if (!dealerFound && player) {
+        this.dealer = i;
+        player.dealer = true;
+        dealerFound = true;
+      }
+    });
+  }
+
   forEachSeat(callback) {
     for (let i = 0; i < this.maxPlayers; i++) {
       const player = this.seats[i];
@@ -109,6 +125,7 @@ class Game {
   }
 
   stand(seat) {
+    this.seats[seat].seat = null;
     this.seats[seat] = null;
     this.curPlayers -= 1;
   }

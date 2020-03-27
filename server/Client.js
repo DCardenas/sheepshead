@@ -36,6 +36,14 @@ class Client {
     return pack;
   }
 
+  hoverCard(id, hover) {
+    const card = this.hand.findCardByID(id);
+
+    if (card) {
+      card.hover = hover;
+    }
+  }
+
   emit(type, data) {
     this.socket.emit(type, data);
   }

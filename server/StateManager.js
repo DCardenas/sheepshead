@@ -13,11 +13,10 @@ class StateManager {
       const updatePack = this.activeState.exit(gameState);
       callback(updatePack);
     }
-
+    
     this.activeState = this.getState(name);
 
-    const updatePack = {}
-    updatePack.game = this.activeState.enter(gameState);
+    const updatePack = this.activeState.enter(gameState);
     updatePack.state = this.activeState.name;
     callback(updatePack);
   }
@@ -30,24 +29,6 @@ class StateManager {
     let updatePack = {}
 
     updatePack = this.activeState.handleEvent(type, data, gameState);
-
-    if (type === 'stand') {
-      // Add options for what happens if someone leaves during a game
-      // 30 sec buffer to rejoin
-      // Allow anyone to take seat
-      // Etc
-      gameState.stand(data.player.seat);
-
-      if (this.activeState.name !== 'pregame') {
-        this.setState('pregame', gameState, callback);
-      }
-
-      updatePack.stand = {
-        seat: data.player.seat
-      }
-      callback(updatePack);
-      return
-    }
 
     callback(updatePack);
     if (this.activeState.toExit) {
