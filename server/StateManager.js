@@ -11,9 +11,13 @@ class StateManager {
   setState(name, gameState, callback) {
     if (this.activeState) {
       const updatePack = this.activeState.exit(gameState);
-      callback(updatePack);
+      this.activeState.toExit = false;
+
+      if (updatePack !== null) {
+        callback(updatePack);
+      }
     }
-    
+
     this.activeState = this.getState(name);
 
     const updatePack = this.activeState.enter(gameState);
@@ -26,11 +30,12 @@ class StateManager {
   }
 
   handleEvent(type, data, gameState, callback) {
-    let updatePack = {}
+    let updatePack = {};
 
     updatePack = this.activeState.handleEvent(type, data, gameState);
 
     callback(updatePack);
+
     if (this.activeState.toExit) {
       this.setState(this.activeState.nextState, gameState, callback);
     }

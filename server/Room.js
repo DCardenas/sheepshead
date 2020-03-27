@@ -5,7 +5,7 @@ class Room {
   constructor(settings) {
     this.game = new Game(this, settings);
     this.clientManager = new ClientManager();
-    this.bots = new Map();
+    this.bots = new ClientManager();
     this.id = Math.random();
   }
 
@@ -43,11 +43,15 @@ class Room {
     const ai = this.game.addAI();
 
     if (ai) {
-      this.bots.set(ai.id, ai);
+      this.bots.add(ai);
     }
   }
 
   clearAI() {
+    if (this.bots.length === 0) {
+      return
+    }
+
     const pack = {
       clients: []
     }
@@ -80,10 +84,12 @@ class Room {
 
   getInitPack() {
     const pack = {
-      clients: this.clientManager.getInitPackAll(),
+      clients: this.clientManager.getInitPackAll().concat(this.bots.getInitPackAll()),
       state: this.game.activeState,
       game: this.game.getInitPack()
     }
+
+    pack.clients.push()
 
     return pack;
   }

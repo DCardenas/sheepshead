@@ -13,11 +13,22 @@ class ClientManager {
     this.clients.delete(id);
   }
 
+  clear() {
+    this.clients.clear();
+  }
+
+  forEach(callback) {
+    this.clients.forEach((client, id, map) => {
+      callback(client, id, map);
+    });
+  }
+
   onClientJoin(client) {
     this.emitAll('init', {clients: [client.getInitPack()]});
     this.add(client);
-    client.emit('init', {selfID: client.id});
-    client.emit('init', client.room.getInitPack());
+    const roomPack = client.room.getInitPack();
+    roomPack.selfID = client.id;
+    client.emit('init', roomPack);
   }
 
   onClientLeave(id) {

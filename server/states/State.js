@@ -54,11 +54,11 @@ class State {
   }
 
   enter() {
-
+    return null
   }
 
   exit() {
-
+    return null
   }
 
   addCallback(type, callback) {

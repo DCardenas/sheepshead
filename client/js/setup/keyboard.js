@@ -11,7 +11,7 @@ export default function setupKeyboard(socket) {
       socket.emit('addAI');
     }
 
-    if (keyCode === 'KeyR') {
+    if (keyCode === 'KeyH') {
       socket.emit('resetGame');
     }
   });

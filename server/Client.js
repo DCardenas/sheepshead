@@ -45,6 +45,9 @@ class Client {
   }
 
   emit(type, data) {
+    if (!this.socket) {
+      return
+    }
     this.socket.emit(type, data);
   }
 

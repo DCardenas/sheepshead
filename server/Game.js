@@ -148,6 +148,7 @@ class Game {
   nextPlayer() {
     if (!this.activePlayer) {
       this.activePlayer = this.dealer + 1;
+      this.activePlayer %= this.curPlayers;
       this.seats[this.activePlayer].active = true;
     } else {
       this.seats[this.activePlayer].active = false;
