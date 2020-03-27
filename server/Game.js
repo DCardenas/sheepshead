@@ -53,10 +53,25 @@ class Game {
     });
   }
 
+  hardReset(socket) {
+    this.forEachSeat(player => {
+      if (player !== null) {
+        this.handleEvent('stand', { player: player, seat: player.seat });
+      }
+    })
+    this.reset();
+
+    if (this.activeState !== 'pregame') {
+      this.stateManager.setState('pregame', this, pack => {
+        socket.emit('update', pack);
+      });
+    }
+  }
+
   determineDealer() {
     if (this.curPlayers === 0) {
       this.dealer = null;
-      return 
+      return
     }
 
     let dealerFound = false;

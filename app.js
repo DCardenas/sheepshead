@@ -44,6 +44,11 @@ io.sockets.on('connection', socket => {
     room.addAI();
   });
 
+  socket.on('resetGame', () => {
+    room.game.hardReset(socket);
+    room.clearAI();
+  });
+
   socket.on('disconnect', data => {
     console.log('User Disconnected');
     room.leaveRoom(client);

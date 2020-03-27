@@ -73,6 +73,7 @@ export default class Seat {
   removePlayer() {
     this.player.x = null;
     this.player.y = null;
+    this.player.seat = null;
     this.player.parent = null;
     this.player = null;
     this.redrawBuffer();

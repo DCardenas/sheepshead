@@ -35,11 +35,11 @@ export default class MouseManager {
     });
   }
 
-  enter(obj, cursor) {
+  enter(obj, cursor, socket) {
     this.hover = obj;
 
     if (obj.onenter) {
-      obj.onenter();
+      obj.onenter(socket);
     }
 
     while (obj.parent) {
@@ -50,7 +50,7 @@ export default class MouseManager {
     this.setCursor(cursor || 'default');
   }
 
-  exit() {
+  exit(socket) {
     if (!this.hover) {
       return
     }
@@ -58,7 +58,7 @@ export default class MouseManager {
     let obj = this.hover;
 
     if (obj.onexit) {
-      obj.onexit();
+      obj.onexit(socket);
     }
 
     while (obj.parent) {

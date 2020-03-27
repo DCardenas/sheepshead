@@ -31,7 +31,7 @@ const settings = {
 setupSocket(socket, clients, game);
 
 const keyboard = setupKeyboard(socket);
-const mouse = setupMouse(canvas, game);
+const mouse = setupMouse(canvas, game, socket);
 const comp = setupComp(clients, game, settings);
 
 function loop() {
@@ -41,6 +41,13 @@ function loop() {
   ctx.textAlign = 'left';
   ctx.textBaseline = 'top';
   ctx.fillText(`(${mouse.x}, ${mouse.y})`, 10, 10);
+
+  game.seats.forEach(seat => {
+    if (seat.player) {
+      seat.player.redraw = true;
+      seat.redraw = true;
+    }
+  });
 
   window.requestAnimationFrame(loop);
 }

@@ -1,10 +1,9 @@
 function hoverCard(data, gameState) {
-  const player = gameState.getPlayerBySeat(data.player.seat);
-  player.hoverCard(data.id, data.hover);
+  data.player.hoverCard(data.id, data.hover);
 
   return {
-    client: [
-      player.getUpdatePack(['hand'])
+    clients: [
+      data.player.getUpdatePack(['hand'])
     ]
   }
 }
@@ -34,9 +33,9 @@ function stand(data, gameState) {
     }
   }
 
-  if (this.name !== 'pregame') {
-    this.nextState = 'pregame';
-    this.toExit = true;
+  if (gameState.activeState.name !== 'pregame') {
+    gameState.activeState.nextState = 'pregame';
+    gameState.activeState.toExit = true;
   }
 
   return pack

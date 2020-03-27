@@ -49,7 +49,7 @@ export default class Game {
 
   getActivePlayer() {
     if (this.activePlayer) {
-      return this.seats[this.activePlayer]
+      return this.seats[this.activePlayer].player
     }
 
     return null
@@ -94,21 +94,27 @@ export default class Game {
       if (key === 'ai') {
         continue
       }
-      if (data[key] !== null && data[key] !== this[key]) {
-        this[key] = data[key];
-
+      if (data[key] !== this[key]) {
         if (key === 'activePlayer') {
-          if (this.getActivePlayer()) {
-            this.getActivePlayer().active = false;
+          const curPlayer = this.getActivePlayer();
+          if (curPlayer) {
+            curPlayer.active = false;
+            curPlayer.redraw = true;
+            this.seats[curPlayer.seat].redraw = true;
           }
 
-          const player = this.getPlayerBySeat(data[key]);
+          if (data[key] !== null) {
+            const player = this.getPlayerBySeat(data[key]);
 
-          if (player) {
-            player.active = true;
+            if (player) {
+              player.active = true;
+              player.redraw = true;
+              this.seats[player.seat].redraw = true;
+            }
           }
         }
 
+        this[key] = data[key];
         update = true;
       }
     }

@@ -38,6 +38,10 @@ export default class Card {
     }
   }
 
+  print() {
+    return `${this.f} of ${this.s}`
+  }
+
   createBuffer() {
     this.buffer = document.createElement('canvas');
     this.buffer.width = this.w;
@@ -46,18 +50,36 @@ export default class Card {
     this.redrawBuffer();
   }
 
-  onenter() {
+  onenter(socket) {
+    this.enters += 1;
+
     this.hover = true;
-    this.y -= 10;
     this.bgColor = 'yellow';
     this.redraw = true;
+
+    socket.emit('userInput', {
+      type: 'hover',
+      data: {
+        id: this.id,
+        hover: true
+      }
+    });
   }
 
-  onexit() {
+  onexit(socket) {
+    this.exits += 1;
+
     this.hover = false;
-    this.y += 10;
     this.bgColor = 'white';
     this.redraw = true;
+
+    socket.emit('userInput', {
+      type: 'hover',
+      data: {
+        id: this.id,
+        hover: false
+      }
+    });
   }
 
   redrawBuffer() {

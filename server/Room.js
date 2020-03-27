@@ -35,7 +35,6 @@ class Room {
     client.room = null;
 
     if (client.seat !== null) {
-      console.log('Standing up!');
       this.game.handleEvent('stand', { player: client, seat: client.seat });
     }
   }
@@ -46,6 +45,25 @@ class Room {
     if (ai) {
       this.bots.set(ai.id, ai);
     }
+  }
+
+  clearAI() {
+    const pack = {
+      clients: []
+    }
+
+    this.bots.forEach(bot => {
+      pack.clients.push(bot.id);
+    });
+
+    this.bots.clear();
+
+    this.emitAll('remove', pack);
+  }
+
+  removeAI(ai) {
+    this.bots.delete(ai.id);
+    this.emitAll('remove', { clients: [ai.id] });
   }
 
   canSit(seatNum) {

@@ -40,7 +40,10 @@ export default class Client {
 
     this.hand.forEach((card, i) => {
       card.redrawBuffer();
-      ctx.drawImage(card.buffer, card.x - card.w / 2, card.y - card.h / 2);
+
+      const x = card.x - card.w / 2;
+      const y = card.y - card.h / 2 - (card.hover || card.serverHover ? 10 : 0);
+      ctx.drawImage(card.buffer, x, y);
     });
 
     this.redraw = false;
@@ -48,13 +51,11 @@ export default class Client {
 
   serverUpdate(data) {
     for (let key in data) {
+      this.hand.clear();
+
       if (key === 'hand') {
         const totalCards = data[key].cards.length;
         data[key].cards.forEach((cardData, i) => {
-          if (this.hand.has(cardData.id)) {
-            return
-          }
-
           const card = new Card(cardData, this);
           const x = this.buffer.width / 2 + (i + 0.5 - totalCards / 2) * card.w;
           const y = this.buffer.height - card.h / 2 - 10;

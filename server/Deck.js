@@ -52,6 +52,16 @@ class Deck {
   clear() {
     this.cards = [];
   }
+
+  findCardByID(id) {
+    for (let i = 0; i < this.cards.length; i++) {
+      if (this.cards[i].id === id) {
+        return this.cards[i]
+      }
+    }
+
+    return null
+  }
 }
 
 module.exports = Deck;

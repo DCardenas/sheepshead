@@ -8,7 +8,7 @@ function createStandButton(socket, game) {
   );
   standButton.active = false;
   standButton.onclick = () => {
-    socket.emit('stand');
+    socket.emit('userInput', { type: 'stand', data: {} });
   }
   standButton.determineActive = () => {
     let sitting = false;
@@ -44,7 +44,8 @@ export function buildPregameUI(socket, game) {
 
 export function buildPickingUI(socket, game) {
   function isActive() {
-    return game.getActivePlayer().isHost;
+    let player = game.getActivePlayer();
+    return player && player.isHost;
   }
 
   const picking = {

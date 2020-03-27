@@ -3,6 +3,7 @@ class Card {
     this.f = face;
     this.s = suit;
     this.id = Math.random();
+    this.serverHover = false;
   }
 
   print() {

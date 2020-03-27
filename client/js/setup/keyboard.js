@@ -10,6 +10,10 @@ export default function setupKeyboard(socket) {
     if (keyCode === 'KeyA') {
       socket.emit('addAI');
     }
+
+    if (keyCode === 'KeyR') {
+      socket.emit('resetGame');
+    }
   });
 
   return keyboard;

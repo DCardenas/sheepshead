@@ -23,25 +23,25 @@ export default function setupSocket(socket, clients, game) {
 
   // REFACTOR THIS CODE //
   socket.on('init', data => {
-    if (data.selfID) {
+    if (data.selfID !== null && typeof data.selfID !== 'undefined') {
       clients.selfID = data.selfID;
     }
 
-    if (data.clients) {
+    if (data.clients !== null && typeof data.clients !== 'undefined') {
       data.clients.forEach(clientData => {
         const client = createClient(clientData);
         clients.addClient(client);
       });
     }
 
-    if (data.state) {
+    if (data.state !== null && typeof data.state !== 'undefined') {
       game.setState(data.state);
     }
 
-    if (data.game) {
+    if (data.game !== null && typeof data.game !== 'undefined') {
       game.serverUpdate(data.game, clients);
 
-      if (data.game.ai) {
+      if (data.game.ai !== null && typeof data.game.ai !== 'undefined') {
         data.game.ai.forEach(aiData => {
           const ai = createClient(aiData);
           clients.addClient(ai);
@@ -53,20 +53,20 @@ export default function setupSocket(socket, clients, game) {
   });
 
   socket.on('update', data => {
-    if (data.state) {
+    if (data.state !== null && typeof data.state !== 'undefined') {
       game.setState(data.state);
     }
 
-    if (data.sit) {
+    if (data.stand !== null && typeof data.stand !== 'undefined') {
+      game.removePlayer(data.stand.seat);
+    }
+
+    if (data.sit !== null && typeof data.sit !== 'undefined') {
       const client = clients.getClientByID(data.sit.id);
       game.addPlayer(data.sit.seat, client);
     }
 
-    if (data.stand) {
-      game.removePlayer(data.stand.seat);
-    }
-
-    if (data.clients) {
+    if (data.clients !== null && typeof data.clients !== 'undefined') {
       data.clients.forEach(clientData => {
         const client = clients.getClientByID(clientData.id);
         client.serverUpdate(clientData);
@@ -74,7 +74,7 @@ export default function setupSocket(socket, clients, game) {
       });
     }
 
-    if (data.game) {
+    if (data.game !== null && typeof data.game !== 'undefined') {
       game.serverUpdate(data.game, clients);
 
       if (data.game.ai) {
@@ -84,12 +84,19 @@ export default function setupSocket(socket, clients, game) {
         });
       }
     }
+
+    game.update();
   });
 
   socket.on('remove', data => {
-    if (data.clients) {
+    if (data.clients !== null && typeof data.clients !== 'undefined') {
       data.clients.forEach(id => {
         const client = clients.getClientByID(id);
+        if (!client) {
+          console.log('Could not find client!');
+          return
+        }
+
         if (client.seat !== null) {
           game.removePlayer(client.seat);
         }
@@ -101,10 +108,10 @@ export default function setupSocket(socket, clients, game) {
   });
 
   socket.on('warning', data => {
-    if (data.msg) {
+    if (data.msg !== null && typeof data.msg !== 'undefined') {
       console.log(data.msg);
     }
   });
 
-  return socket;
+  return socket
 }
