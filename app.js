@@ -45,7 +45,7 @@ io.sockets.on('connection', socket => {
   });
 
   socket.on('resetGame', () => {
-    room.game.hardReset(socket);
+    room.game.hardReset();
     room.clearAI();
   });
 

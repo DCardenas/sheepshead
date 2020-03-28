@@ -25,7 +25,7 @@ function createStandButton(socket, game) {
   return standButton;
 }
 
-export function buildPregameUI(socket, game) {
+function buildPregameUI(socket, game) {
   const pregame = {
     buttons: []
   }
@@ -42,10 +42,10 @@ export function buildPregameUI(socket, game) {
   return pregame
 }
 
-export function buildPickingUI(socket, game) {
+function buildPickingUI(socket, game) {
   function isActive() {
-    let player = game.getActivePlayer();
-    return player && player.isHost;
+    // this refers to the button itself
+    this.active = true;
   }
 
   const picking = {
@@ -64,7 +64,7 @@ export function buildPickingUI(socket, game) {
   );
   pickButton.active = false;
   pickButton.onclick = () => {
-    socket.emit('pick');
+    socket.emit('userInput', { type: 'pick', data: {} });
   }
   pickButton.determineActive = isActive;
 
@@ -73,7 +73,7 @@ export function buildPickingUI(socket, game) {
   );
   passButton.active = false;
   passButton.onclick = () => {
-    socket.emit('pass');
+    socket.emit('userInput', { type: 'pass', data: {} });
   }
   passButton.determineActive = isActive;
 
@@ -82,4 +82,43 @@ export function buildPickingUI(socket, game) {
   picking.buttons.push(passButton);
 
   return picking
+}
+
+function buildBuryingUI(socket, game) {
+  function isActive() {
+    // this refers to the button itself
+    this.active = true;
+  }
+
+  const burying = {
+    buttons: []
+  }
+  burying.update = () => {
+    burying.buttons.forEach(button => {
+      button.determineActive();
+    });
+  }
+
+  const standButton = createStandButton(socket, game);
+
+  const buryButton = new Button(
+    150, CANVAS_HEIGHT * 0.9, 100, 80, 'Bury', game
+  );
+  buryButton.active = false;
+  buryButton.onclick = () => {
+    socket.emit('userInput', { type: 'bury', data: {} });
+  }
+  buryButton.determineActive = isActive;
+
+  burying.buttons.push(buryButton);
+
+  return burying;
+}
+
+export default function buildStatesUI(socket, game) {
+  return {
+    pregame: buildPregameUI(socket, game),
+    picking: buildPickingUI(socket, game),
+    burying: buildBuryingUI(socket, game),
+  }
 }

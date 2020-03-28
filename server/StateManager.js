@@ -2,6 +2,7 @@ class StateManager {
   constructor(gameState) {
     this.activeState = null;
     this.states = new Map();
+    this.nextState = null;
   }
 
   addState(state) {
@@ -23,6 +24,8 @@ class StateManager {
     const updatePack = this.activeState.enter(gameState);
     updatePack.state = this.activeState.name;
     callback(updatePack);
+
+    this.nextState = this.activeState.nextState;
   }
 
   getState(name) {
@@ -37,7 +40,7 @@ class StateManager {
     callback(updatePack);
 
     if (this.activeState.toExit) {
-      this.setState(this.activeState.nextState, gameState, callback);
+      this.setState(this.nextState, gameState, callback);
     }
   }
 }

@@ -38,6 +38,10 @@ class Game {
     return this.stateManager.activeState.name;
   }
 
+  getActivePlayer() {
+    return this.seats[this.activePlayer];
+  }
+
   reset() {
     this.activePlayer = null;
     this.dealer = null;
@@ -53,7 +57,7 @@ class Game {
     });
   }
 
-  hardReset(socket) {
+  hardReset() {
     this.forEachSeat(player => {
       if (player !== null) {
         this.handleEvent('stand', { player: player, seat: player.seat });
@@ -63,7 +67,7 @@ class Game {
 
     if (this.activeState !== 'pregame') {
       this.stateManager.setState('pregame', this, pack => {
-        socket.emit('update', pack);
+        this.room.emitAll('update', pack);
       });
     }
   }
@@ -173,6 +177,11 @@ class Game {
   }
 
   deal() {
+    if (this.curPlayers !== this.maxPlayers) {
+      // Something horrible has happened and we need to hardReset
+      this.hardReset();
+    }
+
     this.forEachSeat((player, i) => {
       this.deck.deal(player.hand, 3);
     });
@@ -185,12 +194,15 @@ class Game {
   }
 
   pick(player) {
-    if (player.seat !== this.activePlayer) {
+    if (!player.host && player.seat !== this.activePlayer) {
       console.log('Player trying to pick when it is not their turn!');
-      return
+      return false
     }
 
     this.picker = this.activePlayer;
+    this.blind.deal(this.getActivePlayer().hand, 2);
+
+    return true
   }
 }
 

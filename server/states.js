@@ -2,13 +2,14 @@ const StateManager = require('./StateManager.js');
 const State = require('./states/State.js');
 const createPregameState = require('./states/pregame.js');
 const createPickingState = require('./states/picking.js');
+const createBuryingState = require('./states/burying.js');
 
 function setupStateManager(gameState) {
   const stateManager = new StateManager();
 
   const pregame = createPregameState();
   const picking = createPickingState();
-  const burying = new State('burying');
+  const burying = createBuryingState();
   const playing = new State('playing');
   const paused = new State('paused');
 
@@ -16,6 +17,8 @@ function setupStateManager(gameState) {
     stateManager.addState(state);
   });
   stateManager.activeState = pregame;
+  stateManager.nextState = pregame.nextState;
+
   return stateManager;
 }
 

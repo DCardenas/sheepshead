@@ -33,8 +33,8 @@ function stand(data, gameState) {
     }
   }
 
-  if (gameState.stateManager.activeState !== 'pregame') {
-    gameState.stateManager.activeState.nextState = 'pregame';
+  if (gameState.stateManager.activeState.name !== 'pregame') {
+    gameState.stateManager.nextState = 'pregame';
     gameState.stateManager.activeState.toExit = true;
   }
 

@@ -5,6 +5,7 @@ class Client {
     this.socket = socket;
     this.seat = null;
     this.hand = new Deck();
+    this.bury = new Deck();
 
     for (let key in data) {
       this[key] = data[key];

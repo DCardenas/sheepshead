@@ -1,14 +1,11 @@
-import { buildPregameUI, buildPickingUI } from './states.js';
+import buildStatesUI from './states.js';
 
 export default function createUI(socket, game) {
   const ui = {};
 
   ui.redraw = true;
 
-  ui.states = {
-    pregame: buildPregameUI(socket, game),
-    picking: buildPickingUI(socket, game),
-  }
+  ui.states = buildStatesUI(socket, game)
 
   ui.update = () => {
     const state = game.getUI();

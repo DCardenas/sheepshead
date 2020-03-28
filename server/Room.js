@@ -26,6 +26,10 @@ class Room {
   }
 
   joinRoom(client) {
+    if (this.clientManager.clients.size === 0) {
+      client.host = true;
+    }
+
     this.clientManager.add(client);
     client.room = this;
   }

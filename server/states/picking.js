@@ -20,7 +20,7 @@ function createPickingState() {
 
     return pack
   }
-  picking.handleEvent('pass', (data, gameState) => {
+  picking.addCallback('pass', (data, gameState) => {
     const pack = { game: {} }
 
     gameState.nextPlayer();
@@ -28,12 +28,12 @@ function createPickingState() {
 
     return pack
   });
-  picking.handleEvent('pick', (data, gameState) => {
-    const pack = { game: {}, clients: {} }
+  picking.addCallback('pick', (data, gameState) => {
+    const pack = { game: {}, clients: [] }
 
-    gameState.pick(data.player);
-
-    picking.toExit = true;
+    if (gameState.pick(data.player)) {
+      picking.toExit = true;
+    }
 
     return pack
   });
