@@ -7,6 +7,7 @@ export default class Card {
     this.id = data.id;
     this.parent = parent;
 
+    this.serverHover = data.serverHover;
     this.hover = false;
     this.selected = false;
 
@@ -14,6 +15,8 @@ export default class Card {
     this.y = null;
     this.w = 45;
     this.h = 70;
+
+    this.updated = true;
 
     this.bgColor = 'white';
 
@@ -38,6 +41,14 @@ export default class Card {
     }
   }
 
+  serverUpdate(data) {
+    for (let key in data) {
+      this[key] = data[key];
+    }
+
+    this.updated = true;
+  }
+
   print() {
     return `${this.f} of ${this.s}`
   }
@@ -46,6 +57,7 @@ export default class Card {
     this.buffer = document.createElement('canvas');
     this.buffer.width = this.w;
     this.buffer.height = this.h;
+    this.redraw = true;
 
     this.redrawBuffer();
   }
@@ -106,5 +118,7 @@ export default class Card {
     ctx.font = '22px Arial';
 
     ctx.fillText(this.f + this.s, this.w / 2, this.h * 0.55);
+
+    this.redraw = false;
   }
 }

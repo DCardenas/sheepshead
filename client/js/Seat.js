@@ -86,12 +86,7 @@ export default class Seat {
 
     if (this.player) {
       if (this.player.isHost) {
-        this.player.hand.forEach(card => {
-          const rect = card.bounds;
-          if (collisionPointRect(pos, rect)) {
-            result.target = card;
-          }
-        })
+        result.target = this.player.checkMouseHover(pos);
       }
     } else {
       const rect = this.button.bounds;
@@ -101,5 +96,9 @@ export default class Seat {
     }
 
     return result
+  }
+
+  shouldRedraw() {
+    return this.redraw || (this.player && this.player.redraw);
   }
 }

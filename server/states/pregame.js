@@ -30,14 +30,7 @@ function createPregameState() {
     return pack
   }
   pregame.exit = gameState => {
-    gameState.deal();
-
-    const pack = { clients: [] }
-    gameState.forEachSeat(player => {
-      pack.clients.push(player.getUpdatePack(['hand']));
-    });
-
-    return pack
+    
   }
   pregame.addCallback('sit', (data, gameState) => {
     const pack = { clients: [], game: {} };

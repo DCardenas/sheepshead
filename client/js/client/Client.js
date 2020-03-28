@@ -1,9 +1,10 @@
-import Card from '../Card.js';
+import Deck from '../Deck.js';
 import Hitbox from '../Hitbox.js';
+import { collisionPointRect } from '../utils.js';
 
 export default class Client {
   constructor(data) {
-    this.hand = new Map();
+    this.hand = new Deck(this);
     this.createBuffer();
     this.hitbox = new Hitbox(0, 0, 1, 1, this);
     this.isHost = false;
@@ -38,8 +39,10 @@ export default class Client {
     ctx.font = '30px Arial';
     ctx.fillText(this.name, this.buffer.width / 2, 45);
 
-    this.hand.forEach((card, i) => {
-      card.redrawBuffer();
+    this.hand.cards.forEach((card, i) => {
+      if (card.redraw) {
+        card.redrawBuffer();
+      }
 
       const x = card.x - card.w / 2;
       const y = card.y - card.h / 2 - (card.hover || card.serverHover ? 10 : 0);
@@ -49,22 +52,23 @@ export default class Client {
     this.redraw = false;
   }
 
+  checkMouseHover(pos) {
+    let target = null;
+
+    this.hand.cards.forEach(card => {
+      const rect = card.bounds;
+      if (collisionPointRect(pos, rect)) {
+        target = card;
+      }
+    });
+
+    return target
+  }
+
   serverUpdate(data) {
     for (let key in data) {
-      this.hand.clear();
-
       if (key === 'hand') {
-        const totalCards = data[key].cards.length;
-        data[key].cards.forEach((cardData, i) => {
-          const card = new Card(cardData, this);
-          const x = this.buffer.width / 2 + (i + 0.5 - totalCards / 2) * card.w;
-          const y = this.buffer.height - card.h / 2 - 10;
-
-          card.x = x;
-          card.y = y;
-          this.hand.set(card.id, card);
-        });
-
+        this.hand.serverUpdate(data[key]);
         this.redraw = true;
       } else {
         this[key] = data[key];

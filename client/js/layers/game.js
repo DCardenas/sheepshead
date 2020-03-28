@@ -44,7 +44,7 @@ export function createSeatLayer(clients, seats, settings) {
     for (let i = 0; i < NUM_PLAYERS; i++) {
       const seat = seats[seatNum];
 
-      if (seat.redraw) {
+      if (seat.shouldRedraw()) {
         seat.redrawBuffer();
       }
 

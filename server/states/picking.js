@@ -5,8 +5,15 @@ function createPickingState() {
 
   picking.enter = gameState => {
     const pack = {
+      clients: [],
       game: {}
-    };
+    }
+
+    gameState.deal();
+
+    gameState.forEachSeat(player => {
+      pack.clients.push(player.getUpdatePack(['hand']));
+    });
 
     gameState.nextPlayer();
     pack.game.activePlayer = gameState.activePlayer;
