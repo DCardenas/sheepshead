@@ -1,8 +1,9 @@
 import Card from './Card.js';
 
 export default class Deck {
-  constructor(parent) {
+  constructor(name, parent) {
     this.cards = new Map();
+    this.name = name;
     this.parent = parent;
   }
 
@@ -25,7 +26,7 @@ export default class Deck {
       if (ourCard) {
         ourCard.serverUpdate(cardData);
       } else {
-        const card = new Card(cardData, this.parent);
+        const card = new Card(cardData, this.parent, this.name);
         this.cards.set(card.id, card);
       }
     });

@@ -15,9 +15,47 @@ function createBuryingState() {
 
     return pack
   }
-  burying.addCallback('cardSelected', (data, gameState) => {
-    
+  burying.addCallback('cardMoved', (data, gameState) => {
+    if (!data.player.host && data.player.id !== data.getActivePlayer().id) {
+      return {
+        err: true,
+        msg: 'Not your turn!'
+      }
+    }
+
+    const player = gameState.getPlayerByID(data.parent);
+    const pack = {
+      clients: []
+    }
+
+    const deck = data.deck;
+    const card = player[deck].findCardByID(data.id);
+
+    if (deck === 'hand') {
+      player.bury.push(card);
+      player.hand.removeCard(card);
+    } else {
+      player.hand.push(card);
+      player.bury.removeCard(card);
+    }
+
+    pack.clients.push(player.getUpdatePack(['hand', 'bury']));
+
+    return pack
   });
+  burying.addCallback('bury', (data, gameState) => {
+    const pack = {};
+
+    if (player.bury.cards.length < 2) {
+      pack.err = true;
+      pack.msg = 'You must bury two cards!';
+      return pack
+    }
+
+    burying.toExit = true;
+
+    return pack
+  })
 
   burying.nextState = 'playing';
 

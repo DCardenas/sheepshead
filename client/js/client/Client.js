@@ -4,8 +4,11 @@ import { collisionPointRect } from '../utils.js';
 
 export default class Client {
   constructor(data) {
-    this.hand = new Deck(this);
+    this.hand = new Deck('hand', this);
+    this.bury = new Deck('bury', this);
+
     this.createBuffer();
+
     this.hitbox = new Hitbox(0, 0, 1, 1, this);
     this.isHost = false;
 
@@ -67,8 +70,8 @@ export default class Client {
 
   serverUpdate(data) {
     for (let key in data) {
-      if (key === 'hand') {
-        this.hand.serverUpdate(data[key]);
+      if (key === 'hand' || key === 'bury') {
+        this[key].serverUpdate(data[key]);
         this.redraw = true;
       } else {
         this[key] = data[key];

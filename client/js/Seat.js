@@ -85,9 +85,9 @@ export default class Seat {
     }
 
     if (this.player) {
-      if (this.player.isHost) {
+      //if (this.player.isHost) {
         result.target = this.player.checkMouseHover(pos);
-      }
+      //}
     } else {
       const rect = this.button.bounds;
       if (collisionPointRect(pos, rect)) {

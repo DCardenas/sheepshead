@@ -42,6 +42,19 @@ class Game {
     return this.seats[this.activePlayer];
   }
 
+  getPlayerByID(id) {
+    let player = null;
+
+    for (let i = 0; i < this.maxPlayers; i++) {
+      if (this.seats[i] && this.seats[i].id === id) {
+        player = this.seats[i].player;
+        break
+      }
+    }
+
+    return player
+  }
+
   reset() {
     this.activePlayer = null;
     this.dealer = null;

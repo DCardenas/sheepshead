@@ -1,11 +1,12 @@
 import Hitbox from './Hitbox.js';
 
 export default class Card {
-  constructor(data, parent) {
+  constructor(data, parent, deck) {
     this.f = data.f;
     this.s = data.s;
     this.id = data.id;
     this.parent = parent;
+    this.deck = deck;
 
     this.serverHover = data.serverHover;
     this.hover = false;
@@ -73,7 +74,8 @@ export default class Card {
       type: 'hover',
       data: {
         id: this.id,
-        hover: true
+        hover: true,
+        parent: this.parent.id
       }
     });
   }
@@ -89,9 +91,20 @@ export default class Card {
       type: 'hover',
       data: {
         id: this.id,
-        hover: false
+        hover: false,
+        parent: this.parent.id
       }
     });
+  }
+
+  onclick(btn, socket) {
+    if (btn === 1) {
+      socket.emit('userInput', { type: 'cardMoved', data: {
+        id: this.id,
+        deck: this.deck,
+        parent: this.parent.id
+      }});
+    }
   }
 
   redrawBuffer() {

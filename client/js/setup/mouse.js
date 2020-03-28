@@ -37,7 +37,7 @@ export default function setupMouse(canvas, game, socket) {
 
   mouse.addCallback('click', event => {
     if (mouse.hover && mouse.hover.onclick) {
-      mouse.hover.onclick(event.which);
+      mouse.hover.onclick(event.which, socket);
     }
   })
 

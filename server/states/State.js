@@ -1,9 +1,15 @@
 function hoverCard(data, gameState) {
-  data.player.hoverCard(data.id, data.hover);
+  const player = gameState.getPlayerByID(data.parent);
+
+  if (!player) {
+    return
+  }
+
+  player.hoverCard(data.id, data.hover);
 
   return {
     clients: [
-      data.player.getUpdatePack(['hand'])
+      player.getUpdatePack(['hand'])
     ]
   }
 }

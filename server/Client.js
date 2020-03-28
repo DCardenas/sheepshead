@@ -18,6 +18,7 @@ class Client {
     pack.name = this.name;
     pack.seat = this.seat;
     pack.hand = this.hand;
+    pack.bury = this.bury;
     return pack;
   }
 
