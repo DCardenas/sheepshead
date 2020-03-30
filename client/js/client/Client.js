@@ -22,7 +22,7 @@ export default class Client {
   createBuffer() {
     this.buffer = document.createElement('canvas');
     this.buffer.width = 300;
-    this.buffer.height = 150;
+    this.buffer.height = 120;
 
     this.redrawBuffer();
   }
@@ -40,7 +40,7 @@ export default class Client {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.font = '30px Arial';
-    ctx.fillText(this.name, this.buffer.width / 2, 45);
+    ctx.fillText(this.name, this.buffer.width / 2, 30);
 
     this.hand.cards.forEach((card, i) => {
       if (card.redraw) {

@@ -45,6 +45,7 @@ function createBuryingState() {
   });
   burying.addCallback('bury', (data, gameState) => {
     const pack = {};
+    const player = gameState.getPlayerByID(data.parent);
 
     if (player.bury.cards.length < 2) {
       pack.err = true;
@@ -55,7 +56,7 @@ function createBuryingState() {
     burying.toExit = true;
 
     return pack
-  })
+  });
 
   burying.nextState = 'playing';
 

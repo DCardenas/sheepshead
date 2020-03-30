@@ -1,5 +1,8 @@
 import Hitbox from './Hitbox.js';
 
+const CARD_WIDTH = 45;
+const CARD_HEIGHT = 70;
+
 export default class Card {
   constructor(data, parent, deck) {
     this.f = data.f;
@@ -14,8 +17,8 @@ export default class Card {
 
     this.x = null;
     this.y = null;
-    this.w = 45;
-    this.h = 70;
+    this.w = CARD_WIDTH * 0.8;
+    this.h = CARD_HEIGHT * 0.8;
 
     this.updated = true;
 
@@ -128,7 +131,7 @@ export default class Card {
       ctx.fillStyle = 'red';
     }
 
-    ctx.font = '22px Arial';
+    ctx.font = '18px Arial';
 
     ctx.fillText(this.f + this.s, this.w / 2, this.h * 0.55);
 

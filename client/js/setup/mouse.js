@@ -29,17 +29,17 @@ export default function setupMouse(canvas, game, socket) {
     });
 
     game.getUI().buttons.forEach(button => {
-      if (collisionPointRect(mouse, button.bounds)) {
+      if (button.active && collisionPointRect(mouse, button.bounds)) {
         mouse.enter(button, 'pointer', socket);
       }
     });
   });
 
   mouse.addCallback('click', event => {
-    if (mouse.hover && mouse.hover.onclick) {
+    if (mouse.hover && mouse.hover.active && mouse.hover.onclick) {
       mouse.hover.onclick(event.which, socket);
     }
-  })
+  });
 
   return mouse;
 }

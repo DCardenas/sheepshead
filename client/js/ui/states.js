@@ -1,10 +1,15 @@
-import Button from '../ui/Button.js';
+import State from './State.js';
+import Button from './Button.js';
+
 const CANVAS_WIDTH = 900;
 const CANVAS_HEIGHT = 600;
 
+const BUTTON_WIDTH = 100;
+const BUTTON_HEIGHT = CANVAS_HEIGHT * 0.1;
+
 function createStandButton(socket, game) {
   const standButton = new Button(
-    CANVAS_WIDTH - 120, CANVAS_HEIGHT * 0.9, 100, 80, 'Stand', game
+    CANVAS_WIDTH - 120, 0, BUTTON_WIDTH, BUTTON_HEIGHT, 'Stand', game.ui
   );
   standButton.active = false;
   standButton.onclick = () => {
@@ -26,10 +31,9 @@ function createStandButton(socket, game) {
 }
 
 function buildPregameUI(socket, game) {
-  const pregame = {
-    buttons: []
-  }
-  pregame.update = () => {
+  const pregame = new State('pregame');
+
+  pregame.enter = () => {
     pregame.buttons.forEach(button => {
       button.determineActive();
     });
@@ -37,7 +41,7 @@ function buildPregameUI(socket, game) {
 
   const standButton = createStandButton(socket, game);
 
-  pregame.buttons.push(standButton);
+  pregame.addButton(standButton);
 
   return pregame
 }
@@ -48,10 +52,9 @@ function buildPickingUI(socket, game) {
     this.active = true;
   }
 
-  const picking = {
-    buttons: []
-  }
-  picking.update = () => {
+  const picking = new State('picking');
+
+  picking.enter = () => {
     picking.buttons.forEach(button => {
       button.determineActive();
     });
@@ -60,7 +63,7 @@ function buildPickingUI(socket, game) {
   const standButton = createStandButton(socket, game);
 
   const pickButton = new Button(
-    100, CANVAS_HEIGHT * 0.9, 100, 80, 'Pick', game
+    2, 0, BUTTON_WIDTH, BUTTON_HEIGHT, 'Pick', game.ui
   );
   pickButton.active = false;
   pickButton.onclick = () => {
@@ -69,7 +72,7 @@ function buildPickingUI(socket, game) {
   pickButton.determineActive = isActive;
 
   const passButton = new Button(
-    220, CANVAS_HEIGHT * 0.9, 100, 80, 'Pass', game
+    130, 0, BUTTON_WIDTH, BUTTON_HEIGHT, 'Pass', game.ui
   );
   passButton.active = false;
   passButton.onclick = () => {
@@ -77,9 +80,9 @@ function buildPickingUI(socket, game) {
   }
   passButton.determineActive = isActive;
 
-  picking.buttons.push(standButton);
-  picking.buttons.push(pickButton);
-  picking.buttons.push(passButton);
+  picking.addButton(standButton);
+  picking.addButton(pickButton);
+  picking.addButton(passButton);
 
   return picking
 }
@@ -90,10 +93,9 @@ function buildBuryingUI(socket, game) {
     this.active = true;
   }
 
-  const burying = {
-    buttons: []
-  }
-  burying.update = () => {
+  const burying = new State('burying');
+
+  burying.enter = () => {
     burying.buttons.forEach(button => {
       button.determineActive();
     });
@@ -102,7 +104,7 @@ function buildBuryingUI(socket, game) {
   const standButton = createStandButton(socket, game);
 
   const buryButton = new Button(
-    150, CANVAS_HEIGHT * 0.9, 100, 80, 'Bury', game
+    20, 0, BUTTON_WIDTH, BUTTON_HEIGHT, 'Bury', game.ui
   );
   buryButton.active = false;
   buryButton.onclick = () => {
@@ -110,15 +112,16 @@ function buildBuryingUI(socket, game) {
   }
   buryButton.determineActive = isActive;
 
-  burying.buttons.push(buryButton);
+  burying.addButton(standButton);
+  burying.addButton(buryButton);
 
   return burying;
 }
 
 export default function buildStatesUI(socket, game) {
-  return {
-    pregame: buildPregameUI(socket, game),
-    picking: buildPickingUI(socket, game),
-    burying: buildBuryingUI(socket, game),
-  }
+  return [
+    buildPregameUI(socket, game),
+    buildPickingUI(socket, game),
+    buildBuryingUI(socket, game),
+  ]
 }

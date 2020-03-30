@@ -11,6 +11,7 @@ export default class Button {
 
     this.parent = parent;
     this.hover = false;
+    this.active = false;
 
     this.buffer = document.createElement('canvas');
     this.buffer.width = this.w;

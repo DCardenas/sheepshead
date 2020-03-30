@@ -3,11 +3,11 @@ import setupSeats from './setup/seats.js';
 import createUI from './ui/ui.js';
 
 const seatPos = [
-  {x: 0.5, y: 0.85},
-  {x: 0.17, y: 0.50},
-  {x: 0.30, y: 0.15},
-  {x: 0.69, y: 0.15},
-  {x: 0.83, y: 0.50},
+  {x: 0.5, y: 0.75},
+  {x: 0.17, y: 0.425},
+  {x: 0.30, y: 0.10},
+  {x: 0.69, y: 0.10},
+  {x: 0.83, y: 0.425},
 ]
 export default class Game {
   constructor(width, height, socket) {
@@ -44,7 +44,7 @@ export default class Game {
   }
 
   getUI() {
-    return this.ui.states[this.state];
+    return this.ui.activeState;
   }
 
   getActivePlayer() {

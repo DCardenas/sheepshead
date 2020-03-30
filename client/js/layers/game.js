@@ -12,16 +12,11 @@ export function createGameBGLayer(settings, game) {
       bctx.fillStyle = settings.bgColor || 'blue';
       bctx.fillRect(0, 0, buffer.width, buffer.height);
 
-      const ui = game.ui.states[game.state];
-      ui.buttons.forEach(button => {
-        if (!button.active) {
-          return
-        }
-        if (button.redraw) {
-          button.redrawBuffer();
-        }
-        bctx.drawImage(button.buffer, button.x - button.w / 2, button.y - button.h / 2);
-      });
+      const ui = game.ui;
+
+      ui.redrawBuffer();
+
+      bctx.drawImage(ui.buffer, ui.x, ui.y);
 
       game.ui.redraw = false;
       game.redraw = false;

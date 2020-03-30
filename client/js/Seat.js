@@ -7,7 +7,7 @@ export default class Seat {
     this.num = num;
     this.pos = num;
     this.w = 300;
-    this.h = 150;
+    this.h = 120;
     this.player = null;
 
     this.redraw = true;
@@ -19,6 +19,7 @@ export default class Seat {
       120, 50,
       'Seat ' + this.num, this
     );
+    this.button.active = true;
 
     this.createBuffer();
   }
@@ -68,6 +69,8 @@ export default class Seat {
     player.parent = this;
     this.redrawBuffer();
     player.redrawBuffer();
+
+    this.button.active = false;
   }
 
   removePlayer() {
@@ -77,6 +80,8 @@ export default class Seat {
     this.player.parent = null;
     this.player = null;
     this.redrawBuffer();
+
+    this.button.active = true;
   }
 
   checkMouseHover(pos) {
