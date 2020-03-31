@@ -6,7 +6,7 @@ const CANVAS_HEIGHT = 600;
 
 export default function createUI(socket, game) {
   const ui = new UI();
-  const states = buildStatesUI(socket, game)
+  const states = buildStatesUI(socket, game, ui)
 
   states.forEach(state => {
     ui.addState(state);
@@ -20,12 +20,12 @@ class UI {
     this.activeState = null;
     this.states = new Map();
 
-    this.x = 0;
-    this.y = CANVAS_HEIGHT * 0.9;
+    this.x = CANVAS_WIDTH * 0.5;
+    this.y = CANVAS_HEIGHT * 0.95;
     this.w = CANVAS_WIDTH;
     this.h = CANVAS_HEIGHT * 0.1;
 
-    this.hitbox = new Hitbox(0, 0, 1, 1);
+    this.hitbox = new Hitbox(0, 0, 1, 1, this);
 
     this.createBuffer();
   }
@@ -36,6 +36,8 @@ class UI {
 
   update(game) {
     this.loadState(game);
+
+    this.redrawBuffer();
   }
 
   createBuffer() {
@@ -46,10 +48,17 @@ class UI {
 
   redrawBuffer() {
     if (this.activeState) {
-
+      const ctx = this.buffer.getContext('2d');
+      ctx.clearRect(0, 0, this.w, this.h);
       this.activeState.buttons.forEach(button => {
-
-      })
+        if (button.redraw) {
+          button.redrawBuffer();
+        }
+        
+        if (button.active) {
+          ctx.drawImage(button.buffer, button.x - button.w / 2 , button.y - button.h / 2);
+        }
+      });
     }
   }
 

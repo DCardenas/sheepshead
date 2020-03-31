@@ -1,6 +1,7 @@
 import Client from '../client/Client.js';
+import { exists } from '../utils.js';
 
-export default function setupSocket(socket, clients, game) {
+export default function setupSocket(socket, clients, game, mouse) {
   const seats = game.seats;
 
   seats.forEach(seat => {
@@ -23,25 +24,25 @@ export default function setupSocket(socket, clients, game) {
 
   // REFACTOR THIS CODE //
   socket.on('init', data => {
-    if (data.selfID !== null && typeof data.selfID !== 'undefined') {
+    if (exists(data.selfID)) {
       clients.selfID = data.selfID;
     }
 
-    if (data.clients !== null && typeof data.clients !== 'undefined') {
+    if (exists(data.clients)) {
       data.clients.forEach(clientData => {
         const client = createClient(clientData);
         clients.addClient(client);
       });
     }
 
-    if (data.state !== null && typeof data.state !== 'undefined') {
+    if (exists(data.state)) {
       game.setState(data.state);
     }
 
-    if (data.game !== null && typeof data.game !== 'undefined') {
+    if (exists(data.game)) {
       game.serverUpdate(data.game, clients);
 
-      if (data.game.ai !== null && typeof data.game.ai !== 'undefined') {
+      if (exists(data.game.ai)) {
         data.game.ai.forEach(aiData => {
           const ai = createClient(aiData);
           clients.addClient(ai);
@@ -53,20 +54,20 @@ export default function setupSocket(socket, clients, game) {
   });
 
   socket.on('update', data => {
-    if (data.state !== null && typeof data.state !== 'undefined') {
+    if (exists(data.state)) {
       game.setState(data.state);
     }
 
-    if (data.stand !== null && typeof data.stand !== 'undefined') {
+    if (exists(data.stand)) {
       game.removePlayer(data.stand.seat);
     }
 
-    if (data.sit !== null && typeof data.sit !== 'undefined') {
+    if (exists(data.sit)) {
       const client = clients.getClientByID(data.sit.id);
       game.addPlayer(data.sit.seat, client);
     }
 
-    if (data.clients !== null && typeof data.clients !== 'undefined') {
+    if (exists(data.clients)) {
       data.clients.forEach(clientData => {
         const client = clients.getClientByID(clientData.id);
         client.serverUpdate(clientData);
@@ -74,7 +75,7 @@ export default function setupSocket(socket, clients, game) {
       });
     }
 
-    if (data.game !== null && typeof data.game !== 'undefined') {
+    if (exists(data.game)) {
       game.serverUpdate(data.game, clients);
 
       if (data.game.ai) {
@@ -85,11 +86,24 @@ export default function setupSocket(socket, clients, game) {
       }
     }
 
+    if (exists(data.mouse)) {
+      if (data.mouse.select) {
+        const client = clients.getClientByID(data.mouse.parent);
+        const card = client[data.mouse.deck].getCardByID(data.mouse.id);
+        card.selected = true;
+        mouse.selections.set(card.id, card);
+      } else {
+        const card = mouse.selections.get(data.mouse.id);
+        card.selected = false;
+        mouse.selections.delete(data.mouse.id);
+      }
+    }
+
     game.update();
   });
 
   socket.on('remove', data => {
-    if (data.clients !== null && typeof data.clients !== 'undefined') {
+    if (exists(data.clients)) {
       data.clients.forEach(id => {
         const client = clients.getClientByID(id);
         if (!client) {
@@ -108,7 +122,7 @@ export default function setupSocket(socket, clients, game) {
   });
 
   socket.on('warning', data => {
-    if (data.msg !== null && typeof data.msg !== 'undefined') {
+    if (exists(data.msg)) {
       console.log(data.msg);
     }
   });

@@ -47,6 +47,67 @@ function stand(data, gameState) {
   return pack
 }
 
+function cardSelected(data, gameState) {
+  const pack = {
+    clients: [],
+    mouse: {}
+  }
+
+  const player = gameState.getPlayerByID(data.parent);
+  const card = player[data.deck].getCardByID(data.id);
+
+  card.oldX = card.x;
+  card.oldY = card.y;
+
+  card.x = data.pos.x;
+  card.y = data.pos.y;
+  card.selected = true;
+
+  pack.clients.push(player.getUpdatePack(['hand']));
+  pack.mouse.select = true;
+  pack.mouse.id = data.id;
+  pack.mouse.deck = data.deck;
+  pack.mouse.parent = data.parent;
+
+  return pack
+}
+
+function cardMoved(data, gameState) {
+  const pack = {
+    clients: [],
+  }
+
+  const player = gameState.getPlayerByID(data.parent);
+  const card = player[data.deck].getCardByID(data.id);
+
+  card.x = data.pos.x;
+  card.y = data.pos.y;
+
+  pack.clients.push(player.getUpdatePack(['hand']));
+
+  return pack
+}
+
+function cardReleased(data, gameState) {
+  const pack = {
+    clients: [],
+    mouse: {}
+  }
+
+  const player = gameState.getPlayerByID(data.parent);
+  const card = player[data.deck].getCardByID(data.id);
+
+  card.x = card.oldX;
+  card.y = card.oldY;
+  card.selected = false;
+
+  pack.clients.push(player.getUpdatePack(['hand']));
+  pack.mouse.select = false;
+  pack.mouse.id = card.id;
+
+  return pack
+}
+
 class State {
   constructor(name) {
     this.name = name;
@@ -54,6 +115,9 @@ class State {
 
     if (name !== 'pregame') {
       this.addCallback('hover', hoverCard);
+      this.addCallback('cardSelected', cardSelected);
+      this.addCallback('cardMoved', cardMoved);
+      this.addCallback('cardReleased', cardReleased);
     }
 
     this.addCallback('stand', stand);

@@ -22,7 +22,7 @@ export default class Button {
   }
 
   get bounds() {
-    if (!this.parent) {
+    if (typeof this.parent === undefined || this.parent === null) {
       return this.hitbox.bounds
     }
 
@@ -55,6 +55,8 @@ export default class Button {
     this.hover = true;
     this.bgColor = '#d15707';
     this.redraw = true;
+
+    return 'pointer'
   }
 
   onexit() {

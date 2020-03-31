@@ -1,8 +1,15 @@
 export default class MouseManager {
   constructor() {
-    this.x = 0;
-    this.y = 0;
+    this.pos = {
+      x: 0,
+      y: 0
+    }
     this.hover = null;
+
+    // Local and universal selections
+    this.selection = null;
+    this.selections = new Map();
+
     this.callbacks = new Map();
   }
 
@@ -35,11 +42,12 @@ export default class MouseManager {
     });
   }
 
-  enter(obj, cursor, socket) {
+  enter(obj, socket) {
     this.hover = obj;
 
     if (obj.onenter) {
-      obj.onenter(socket);
+      const cursor = obj.onenter(socket);
+      this.setCursor(cursor || 'default');
     }
 
     while (obj.parent) {
@@ -47,7 +55,6 @@ export default class MouseManager {
       obj.redraw = true;
     }
 
-    this.setCursor(cursor || 'default');
   }
 
   exit(socket) {

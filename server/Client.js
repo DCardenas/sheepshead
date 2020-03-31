@@ -39,7 +39,7 @@ class Client {
   }
 
   hoverCard(id, hover) {
-    const card = this.hand.findCardByID(id);
+    const card = this.hand.getCardByID(id);
 
     if (card) {
       card.serverHover = hover;

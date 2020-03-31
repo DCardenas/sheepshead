@@ -1,13 +1,13 @@
 import Hitbox from './Hitbox.js';
 import setupSeats from './setup/seats.js';
-import createUI from './ui/ui.js';
+import createUI from './setup/ui.js';
 
 const seatPos = [
-  {x: 0.5, y: 0.75},
-  {x: 0.17, y: 0.425},
-  {x: 0.30, y: 0.10},
-  {x: 0.69, y: 0.10},
-  {x: 0.83, y: 0.425},
+  {x: 0.5, y: 0.77},
+  {x: 0.17, y: 0.46},
+  {x: 0.30, y: 0.13},
+  {x: 0.69, y: 0.13},
+  {x: 0.83, y: 0.46},
 ]
 export default class Game {
   constructor(width, height, socket) {
@@ -85,6 +85,7 @@ export default class Game {
 
   update() {
     this.ui.update(this);
+    this.redraw = true;
   }
 
   serverUpdate(data, clients) {

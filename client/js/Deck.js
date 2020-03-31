@@ -7,7 +7,7 @@ export default class Deck {
     this.parent = parent;
   }
 
-  getCard(id) {
+  getCardByID(id) {
     let result = null;
 
     this.cards.forEach(card => {
@@ -21,7 +21,7 @@ export default class Deck {
 
   serverUpdate(data) {
     data.cards.forEach((cardData, i) => {
-      const ourCard = this.getCard(cardData.id);
+      const ourCard = this.getCardByID(cardData.id);
 
       if (ourCard) {
         ourCard.serverUpdate(cardData);
@@ -46,6 +46,10 @@ export default class Deck {
     let i = 0;
     const totalCards = this.cards.size;
     this.cards.forEach(card => {
+      if (card.selected) {
+        return
+      }
+
       const x = this.parent.buffer.width / 2 + (i + 0.5 - totalCards / 2) * card.w;
       const y = this.parent.buffer.height - card.h / 2 - 10;
 

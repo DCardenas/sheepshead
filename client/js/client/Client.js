@@ -16,6 +16,10 @@ export default class Client {
   }
 
   get bounds() {
+    if (typeof this.parent === undefined || this.parent === null) {
+      return this.hitbox.bounds
+    }
+
     return this.parent.bounds;
   }
 
@@ -45,6 +49,10 @@ export default class Client {
     this.hand.cards.forEach((card, i) => {
       if (card.redraw) {
         card.redrawBuffer();
+      }
+
+      if (card.selected) {
+        return
       }
 
       const x = card.x - card.w / 2;

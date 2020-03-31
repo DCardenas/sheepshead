@@ -16,7 +16,7 @@ export function createGameBGLayer(settings, game) {
 
       ui.redrawBuffer();
 
-      bctx.drawImage(ui.buffer, ui.x, ui.y);
+      bctx.drawImage(ui.buffer, ui.x - ui.w / 2, ui.y - ui.h / 2);
 
       game.ui.redraw = false;
       game.redraw = false;
@@ -64,5 +64,21 @@ export function createGameStateLayer(clients, game) {
       ctx.fill();
       ctx.closePath();
     }
+  }
+}
+
+export function createMouseLayer(mouse) {
+  return function drawMouseLayer(ctx) {
+    ctx.fillStyle = 'white';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText(`(${mouse.pos.x}, ${mouse.pos.y})`, 10, 10);
+
+    mouse.selections.forEach(selection => {
+      ctx.drawImage(
+        selection.buffer,
+        selection.x - selection.w / 2, selection.y - selection.h / 2
+      );
+    });
   }
 }

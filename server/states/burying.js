@@ -29,7 +29,7 @@ function createBuryingState() {
     }
 
     const deck = data.deck;
-    const card = player[deck].findCardByID(data.id);
+    const card = player[deck].getCardByID(data.id);
 
     if (deck === 'hand') {
       player.bury.push(card);

@@ -28,19 +28,14 @@ const settings = {
   }
 }
 
-setupSocket(socket, clients, game);
-
 const keyboard = setupKeyboard(socket);
 const mouse = setupMouse(canvas, game, socket);
-const comp = setupComp(clients, game, settings);
+setupSocket(socket, clients, game, mouse);
+
+const comp = setupComp(clients, game, mouse, settings);
 
 function loop() {
   comp.draw(ctx);
-
-  ctx.fillStyle = 'white';
-  ctx.textAlign = 'left';
-  ctx.textBaseline = 'top';
-  ctx.fillText(`(${mouse.x}, ${mouse.y})`, 10, 10);
 
   game.seats.forEach(seat => {
     if (seat.player) {

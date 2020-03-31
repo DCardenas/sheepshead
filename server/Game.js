@@ -47,7 +47,7 @@ class Game {
 
     for (let i = 0; i < this.maxPlayers; i++) {
       if (this.seats[i] && this.seats[i].id === id) {
-        player = this.seats[i].player;
+        player = this.seats[i];
         break
       }
     }
@@ -60,6 +60,8 @@ class Game {
     this.dealer = null;
     this.picker = null;
     this.partner = null;
+
+    this.deck.clear();
     this.deck.populate();
     this.blind.clear();
 
@@ -71,18 +73,22 @@ class Game {
   }
 
   hardReset() {
-    this.forEachSeat(player => {
-      if (player !== null) {
-        this.handleEvent('stand', { player: player, seat: player.seat });
-      }
-    })
+    // Clear out the hands before telling everyone to stand up
     this.reset();
 
+    // Enter pregame if not already
     if (this.activeState !== 'pregame') {
       this.stateManager.setState('pregame', this, pack => {
         this.room.emitAll('update', pack);
       });
     }
+
+    // Make everyone stand up
+    this.forEachSeat(player => {
+      if (player !== null) {
+        this.handleEvent('stand', { player: player, seat: player.seat });
+      }
+    });
   }
 
   determineDealer() {

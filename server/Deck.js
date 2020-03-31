@@ -53,7 +53,7 @@ class Deck {
     this.cards = [];
   }
 
-  findCardByID(id) {
+  getCardByID(id) {
     for (let i = 0; i < this.cards.length; i++) {
       if (this.cards[i].id === id) {
         return this.cards[i]

@@ -22,3 +22,7 @@ export function createObjectForEach() {
     }
   });
 }
+
+export function exists(obj) {
+  return typeof obj !== 'undefined' && obj !== null;
+}

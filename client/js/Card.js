@@ -30,7 +30,7 @@ export default class Card {
   }
 
   get bounds() {
-    if (!this.parent) {
+    if (typeof this.parent === undefined || this.parent === null) {
       return this.hitbox.bounds
     }
 
@@ -81,6 +81,8 @@ export default class Card {
         parent: this.parent.id
       }
     });
+
+    return '-webkit-grab'
   }
 
   onexit(socket) {
@@ -100,13 +102,54 @@ export default class Card {
     });
   }
 
-  onclick(btn, socket) {
+  onmousedown(btn, pos, socket) {
     if (btn === 1) {
-      socket.emit('userInput', { type: 'cardMoved', data: {
+      socket.emit('userInput', { type: 'cardSelected', data: {
         id: this.id,
         deck: this.deck,
-        parent: this.parent.id
+        parent: this.parent.id,
+        pos: pos
       }});
+
+      this.oldX = this.x;
+      this.oldY = this.y;
+
+      this.x = pos.x;
+      this.y = pos.y;
+
+      this.selected = true;
+      this.parent.redraw = true;
+    }
+
+    return '-webkit-grabbing'
+  }
+
+  onmousemove(pos, socket) {
+    socket.emit('userInput', { type: 'cardMoved', data: {
+      id: this.id,
+      deck: this.deck,
+      parent: this.parent.id,
+      pos: pos
+    }});
+
+    this.x = pos.x;
+    this.y = pos.y;
+  }
+
+  onmouseup(btn, target, socket) {
+    if (btn === 1) {
+      socket.emit('userInput', { type: 'cardReleased', data: {
+        id: this.id,
+        deck: this.deck,
+        parent: this.parent.id,
+        target: target,
+      }});
+
+      this.x = this.oldX;
+      this.y = this.oldY;
+
+      this.selected = false;
+      this.parent.redraw = true;
     }
   }
 

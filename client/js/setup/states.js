@@ -1,5 +1,5 @@
-import State from './State.js';
-import Button from './Button.js';
+import State from '../ui/State.js';
+import Button from '../ui/Button.js';
 
 const CANVAS_WIDTH = 900;
 const CANVAS_HEIGHT = 600;
@@ -7,9 +7,9 @@ const CANVAS_HEIGHT = 600;
 const BUTTON_WIDTH = 100;
 const BUTTON_HEIGHT = CANVAS_HEIGHT * 0.1;
 
-function createStandButton(socket, game) {
+function createStandButton(socket, game, ui) {
   const standButton = new Button(
-    CANVAS_WIDTH - 120, 0, BUTTON_WIDTH, BUTTON_HEIGHT, 'Stand', game.ui
+    CANVAS_WIDTH - 60, BUTTON_HEIGHT / 2, BUTTON_WIDTH, BUTTON_HEIGHT, 'Stand', ui
   );
   standButton.active = false;
   standButton.onclick = () => {
@@ -30,7 +30,7 @@ function createStandButton(socket, game) {
   return standButton;
 }
 
-function buildPregameUI(socket, game) {
+function buildPregameUI(socket, game, ui) {
   const pregame = new State('pregame');
 
   pregame.enter = () => {
@@ -39,14 +39,14 @@ function buildPregameUI(socket, game) {
     });
   }
 
-  const standButton = createStandButton(socket, game);
+  const standButton = createStandButton(socket, game, ui);
 
   pregame.addButton(standButton);
 
   return pregame
 }
 
-function buildPickingUI(socket, game) {
+function buildPickingUI(socket, game, ui) {
   function isActive() {
     // this refers to the button itself
     this.active = true;
@@ -60,10 +60,10 @@ function buildPickingUI(socket, game) {
     });
   }
 
-  const standButton = createStandButton(socket, game);
+  const standButton = createStandButton(socket, game, ui);
 
   const pickButton = new Button(
-    2, 0, BUTTON_WIDTH, BUTTON_HEIGHT, 'Pick', game.ui
+    10 + BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2, BUTTON_WIDTH, BUTTON_HEIGHT, 'Pick', ui
   );
   pickButton.active = false;
   pickButton.onclick = () => {
@@ -72,7 +72,7 @@ function buildPickingUI(socket, game) {
   pickButton.determineActive = isActive;
 
   const passButton = new Button(
-    130, 0, BUTTON_WIDTH, BUTTON_HEIGHT, 'Pass', game.ui
+    120 + BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2, BUTTON_WIDTH, BUTTON_HEIGHT, 'Pass', ui
   );
   passButton.active = false;
   passButton.onclick = () => {
@@ -87,7 +87,7 @@ function buildPickingUI(socket, game) {
   return picking
 }
 
-function buildBuryingUI(socket, game) {
+function buildBuryingUI(socket, game, ui) {
   function isActive() {
     // this refers to the button itself
     this.active = true;
@@ -101,10 +101,10 @@ function buildBuryingUI(socket, game) {
     });
   }
 
-  const standButton = createStandButton(socket, game);
+  const standButton = createStandButton(socket, game, ui);
 
   const buryButton = new Button(
-    20, 0, BUTTON_WIDTH, BUTTON_HEIGHT, 'Bury', game.ui
+    60, BUTTON_HEIGHT / 2, BUTTON_WIDTH, BUTTON_HEIGHT, 'Bury', ui
   );
   buryButton.active = false;
   buryButton.onclick = () => {
@@ -118,10 +118,10 @@ function buildBuryingUI(socket, game) {
   return burying;
 }
 
-export default function buildStatesUI(socket, game) {
+export default function buildStatesUI(socket, game, ui) {
   return [
-    buildPregameUI(socket, game),
-    buildPickingUI(socket, game),
-    buildBuryingUI(socket, game),
+    buildPregameUI(socket, game, ui),
+    buildPickingUI(socket, game, ui),
+    buildBuryingUI(socket, game, ui),
   ]
 }
