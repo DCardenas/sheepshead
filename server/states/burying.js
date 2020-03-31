@@ -15,7 +15,7 @@ function createBuryingState() {
 
     return pack
   }
-  burying.addCallback('cardMoved', (data, gameState) => {
+  burying.addCallback('cardTransferred', (data, gameState) => {
     if (!data.player.host && data.player.id !== data.getActivePlayer().id) {
       return {
         err: true,
